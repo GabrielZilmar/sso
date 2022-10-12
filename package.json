@@ -1,0 +1,28 @@
+{
+  "name": "sso",
+  "version": "1.0.0",
+  "description": "SSO System",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts",
+    "build": "npm install && npx tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com-Zilmar:GabrielZilmar/sso.git"
+  },
+  "author": "GabrielZilmar",
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "eslint": "^8.25.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.3.0",
+    "eslint-plugin-promise": "^6.0.1",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.8.4"
+  }
+}
