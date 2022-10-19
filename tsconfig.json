@@ -12,12 +12,10 @@
     "esModuleInterop": true,
     "baseUrl": "src",
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["./src*"],
       "@modules/*": ["./modules/*"],
-      "@pipes/*": ["./pipes/*"],
       "@services/*": ["./services/*"],
-      "@types/*": ["./types/*"],
-      "@utils/*": ["./utils/*"],
+      "@/types/*": ["./types/*"],
       "@config/*": ["./config/*"]
     }
   }
