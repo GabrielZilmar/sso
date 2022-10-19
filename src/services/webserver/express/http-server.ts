@@ -15,7 +15,7 @@ export default class ExpressWebServer implements WebServer {
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json());
 
-    const endpointFiles = `../**/routes/*.${
+    const endpointFiles = `../../../**/routes/*.${
       config.env === "prod" ? "js" : "ts"
     }`;
 
