@@ -1,5 +1,7 @@
-const main = () => {
-  console.log("Hello World!");
+import { httpServer } from "@services/webserver/express";
+
+const main = async () => {
+  await httpServer.start();
 };
 
 main();
