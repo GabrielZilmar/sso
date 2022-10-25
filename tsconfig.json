@@ -16,6 +16,7 @@
       "@modules/*": ["./modules/*"],
       "@services/*": ["./services/*"],
       "@/types/*": ["./types/*"],
+      "@shared/*": ["./shared/*"],
       "@config/*": ["./config/*"]
     }
   }
