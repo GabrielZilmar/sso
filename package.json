@@ -33,6 +33,7 @@
     "typescript": "^4.8.4"
   },
   "dependencies": {
+    "@gabrielzilmar/event-emitter": "^0.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
