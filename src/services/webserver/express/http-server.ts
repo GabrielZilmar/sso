@@ -1,10 +1,10 @@
 import express from "express";
 import cors from "cors";
-import { WebServer } from "@services/webserver/contract";
-import config from "@config/config";
+import { WebServer } from "~services/webserver/contract";
+import config from "~config/config";
 import { glob } from "glob";
 import http from "http";
-import EndpointBuilder from "@services/webserver/express/utils/endpoint-builder";
+import EndpointBuilder from "~services/webserver/express/utils/endpoint-builder";
 
 export default class ExpressWebServer implements WebServer {
   public async setup(): Promise<http.Server> {
