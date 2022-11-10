@@ -6,12 +6,12 @@ export interface UserEmailProps {
 }
 
 export default class UserEmail extends ValueObject<UserEmailProps> {
-  get value(): string {
-    return this.props.value;
-  }
-
   private constructor(props: UserEmailProps) {
     super(props);
+  }
+
+  get value(): string {
+    return this.props.value;
   }
 
   private static isValid(email: string) {
