@@ -10,14 +10,14 @@
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "baseUrl": "src",
+    "baseUrl": "./",
     "paths": {
-      "~/*": ["./src*"],
-      "~modules/*": ["./modules/*"],
-      "~services/*": ["./services/*"],
-      "~/types/*": ["./types/*"],
-      "~shared/*": ["./shared/*"],
-      "~config/*": ["./config/*"]
+      "~modules/*": ["./src/modules/*"],
+      "~services/*": ["./src/services/*"],
+      "~types/*": ["./src/types/*"],
+      "~shared/*": ["./src/shared/*"],
+      "~config/*": ["./src/config/*"],
+      "~/*": ["./src*"]
     }
   }
 }
