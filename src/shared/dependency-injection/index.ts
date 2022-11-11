@@ -16,8 +16,8 @@ export default class DependencyInjection {
 
   private static setupEnvironment(): void {
     container.register("ENVIRONMENT", { useValue: process.env.NODE_ENV });
-    container.register("PORT", { useValue: process.env.port });
-    container.register("PASSWORD_SALTA", {
+    container.register("PORT", { useValue: process.env.PORT });
+    container.register("PASSWORD_SALT", {
       useValue: process.env.PASSWORD_SALT,
     });
   }
@@ -26,10 +26,6 @@ export default class DependencyInjection {
     container.register<ExpressWebServer>(ExpressWebServer, {
       useClass: ExpressWebServer,
     });
-    container.register(
-      EventEmitter,
-      { useClass: EventEmitter },
-      { lifecycle: Lifecycle.Singleton }
-    );
+    container.registerSingleton("EventEmitter", EventEmitter);
   }
 }

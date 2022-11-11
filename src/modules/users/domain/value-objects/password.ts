@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
-import config from "~config/config";
 import { UserDomainErrors } from "~modules/users/domain/errors";
+import DependencyInjection from "~shared/dependency-injection";
 import { ValueObject } from "~shared/domain/value-object";
 
 export interface UserPasswordProps {
@@ -23,7 +23,10 @@ export default class UserPassword extends ValueObject<UserPasswordProps> {
   }
 
   private static async hashPassword(password: string): Promise<string> {
-    const hash = await bcrypt.hash(password, config.passwordSalt);
+    const hash = await bcrypt.hash(
+      password,
+      DependencyInjection.resolve("PASSWORD_SALT")
+    );
 
     return hash;
   }

@@ -16,7 +16,6 @@
       "~services/*": ["./src/services/*"],
       "~types/*": ["./src/types/*"],
       "~shared/*": ["./src/shared/*"],
-      "~config/*": ["./src/config/*"],
       "~/*": ["./src*"]
     }
   }

@@ -1,12 +1,18 @@
 import express from "express";
 import cors from "cors";
 import { WebServer } from "~services/webserver/contract";
-import config from "~config/config";
 import { glob } from "glob";
 import http from "http";
 import EndpointBuilder from "~services/webserver/express/utils/endpoint-builder";
+import { inject, injectable } from "tsyringe";
 
+@injectable()
 export default class ExpressWebServer implements WebServer {
+  constructor(
+    @inject("ENVIRONMENT") private readonly env: string,
+    @inject("PORT") private readonly port: number
+  ) {}
+
   public async setup(): Promise<http.Server> {
     const app = express();
 
@@ -16,7 +22,7 @@ export default class ExpressWebServer implements WebServer {
     app.use(express.json());
 
     const endpointFiles = `../../../**/routes/*.${
-      config.env === "prod" ? "js" : "ts"
+      this.env === "prod" ? "js" : "ts"
     }`;
 
     await Promise.all(
@@ -35,7 +41,7 @@ export default class ExpressWebServer implements WebServer {
         })
     );
 
-    const port = config.port || 8000;
+    const port = this.port || 8000;
     const server = app.listen(port);
 
     console.info(`[SERVER] Running on port ${port}`);
