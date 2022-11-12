@@ -1,6 +1,6 @@
 import { container, InjectionToken } from "tsyringe";
+import UserCreated from "~modules/users/domain/events-listeners/user-created";
 import ExpressWebServer from "~services/webserver/express/http-server";
-import DomainEvents from "~shared/domain/events/domain-events";
 
 export type Environment = "prod" | "dev";
 
@@ -8,6 +8,7 @@ export default class DependencyInjection {
   public static initialize() {
     this.setupEnvironment();
     this.setupServices();
+    this.setupEventListeners();
   }
 
   public static resolve<T>(token: InjectionToken<T>): T {
@@ -26,6 +27,11 @@ export default class DependencyInjection {
     container.register(ExpressWebServer, {
       useClass: ExpressWebServer,
     });
-    container.registerSingleton("DomainEvents", DomainEvents);
+  }
+
+  private static setupEventListeners() {
+    container.register(UserCreated, {
+      useClass: UserCreated,
+    });
   }
 }

@@ -1,8 +1,8 @@
 import { UserDomainErrors } from "~modules/users/domain/errors";
+import { UserCreatedEventPayload } from "~modules/users/domain/events-listeners/user-created";
 import UserId from "~modules/users/domain/user-id";
-import DependencyInjection from "~shared/dependency-injection";
 import { AggregateRoot } from "~shared/domain/aggregate-root";
-import DomainEvents from "~shared/domain/events/domain-events";
+import { domainEvent } from "~shared/domain/events";
 import { UniqueEntityID } from "~shared/domain/unique-entity-id";
 
 export interface UserProps {
@@ -75,9 +75,10 @@ export class User extends AggregateRoot<UserProps> {
     );
 
     if (newUser) {
-      const { eventEmitter } =
-        DependencyInjection.resolve<DomainEvents>("DomainEvents");
-      await eventEmitter.emit("user.created", { payload: user });
+      const { eventEmitter } = domainEvent;
+
+      const eventPayload: UserCreatedEventPayload = { user };
+      await eventEmitter.emit("user.created", eventPayload);
     }
 
     return user;
