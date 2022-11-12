@@ -1,6 +1,6 @@
-import { EventEmitter } from "@gabrielzilmar/event-emitter";
-import { container, InjectionToken, Lifecycle } from "tsyringe";
+import { container, InjectionToken } from "tsyringe";
 import ExpressWebServer from "~services/webserver/express/http-server";
+import DomainEvents from "~shared/domain/events/domain-events";
 
 export type Environment = "prod" | "dev";
 
@@ -23,9 +23,9 @@ export default class DependencyInjection {
   }
 
   private static setupServices() {
-    container.register<ExpressWebServer>(ExpressWebServer, {
+    container.register(ExpressWebServer, {
       useClass: ExpressWebServer,
     });
-    container.registerSingleton("EventEmitter", EventEmitter);
+    container.registerSingleton("DomainEvents", DomainEvents);
   }
 }
