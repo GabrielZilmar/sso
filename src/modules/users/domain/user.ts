@@ -1,5 +1,6 @@
 import { UserDomainErrors } from "~modules/users/domain/errors";
 import { UserCreatedEventPayload } from "~modules/users/domain/events-listeners/user-created";
+import { UserDeletedEventPayload } from "~modules/users/domain/events-listeners/user-deleted";
 import UserId from "~modules/users/domain/user-id";
 import { AggregateRoot } from "~shared/domain/aggregate-root";
 import { domainEvent } from "~shared/domain/events";
@@ -54,6 +55,19 @@ export class User extends AggregateRoot<UserProps> {
     return !!email && !!name && !!password;
   }
 
+  public async delete(): Promise<void> {
+    if (!this.props.isDeleted) {
+      this.props.isDeleted = true;
+
+      const eventPayload: UserDeletedEventPayload = {
+        userId: this.userId,
+        userEmail: this.email,
+        deletedTime: new Date(),
+      };
+      await this.emitEvent("user.created", eventPayload);
+    }
+  }
+
   public static async create(
     props: UserProps,
     id?: UniqueEntityID
@@ -75,10 +89,8 @@ export class User extends AggregateRoot<UserProps> {
     );
 
     if (newUser) {
-      const { eventEmitter } = domainEvent;
-
       const eventPayload: UserCreatedEventPayload = { user };
-      await eventEmitter.emit("user.created", eventPayload);
+      await user.emitEvent("user.created", eventPayload);
     }
 
     return user;
