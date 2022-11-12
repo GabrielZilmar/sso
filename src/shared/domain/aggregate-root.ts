@@ -1,9 +1,12 @@
+import { EventName } from "@gabrielzilmar/event-emitter";
 import { Entity } from "~shared/domain/entity";
+import { domainEvent } from "~shared/domain/events";
+import DomainEvents from "~shared/domain/events/domain-events";
 import { IDomainEvent } from "~shared/domain/events/interface-domain-event";
 import { UniqueEntityID } from "~shared/domain/unique-entity-id";
 
 export abstract class AggregateRoot<T> extends Entity<T> {
-  private _domainEvents: IDomainEvent<T>[] = [];
+  private _domainEvents = domainEvent;
 
   get id(): UniqueEntityID {
     return this._id;
@@ -13,7 +16,10 @@ export abstract class AggregateRoot<T> extends Entity<T> {
     return this.domainEvents;
   }
 
-  protected addDomainEvent(domainEvent: IDomainEvent<T>): void {
-    this._domainEvents.push(domainEvent);
+  protected async emitEvent<T>(
+    eventName: EventName,
+    payload: T
+  ): Promise<void> {
+    await this._domainEvents.eventEmitter.emit(eventName, payload);
   }
 }
