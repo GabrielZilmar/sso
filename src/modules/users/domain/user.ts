@@ -1,6 +1,8 @@
 import { UserDomainErrors } from "~modules/users/domain/errors";
 import UserId from "~modules/users/domain/user-id";
+import DependencyInjection from "~shared/dependency-injection";
 import { AggregateRoot } from "~shared/domain/aggregate-root";
+import DomainEvents from "~shared/domain/events/domain-events";
 import { UniqueEntityID } from "~shared/domain/unique-entity-id";
 
 export interface UserProps {
@@ -52,10 +54,15 @@ export class User extends AggregateRoot<UserProps> {
     return !!email && !!name && !!password;
   }
 
-  public static create(props: UserProps, id?: UniqueEntityID): User {
+  public static async create(
+    props: UserProps,
+    id?: UniqueEntityID
+  ): Promise<User> {
     if (!this.isValid(props)) {
       throw new Error(UserDomainErrors.invalidUserProps);
     }
+
+    const newUser = !id;
 
     const user = new User(
       {
@@ -66,6 +73,12 @@ export class User extends AggregateRoot<UserProps> {
       },
       id
     );
+
+    if (newUser) {
+      const { eventEmitter } =
+        DependencyInjection.resolve<DomainEvents>("DomainEvents");
+      await eventEmitter.emit("user.created", { payload: user });
+    }
 
     return user;
   }
