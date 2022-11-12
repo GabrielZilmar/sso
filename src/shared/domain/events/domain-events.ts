@@ -9,7 +9,7 @@ export default class DomainEvents {
 
   private getUserEvents() {
     const events = [
-      "user.create",
+      "user.created",
       "user.update",
       "user.deleted",
       "user.get",
@@ -20,8 +20,7 @@ export default class DomainEvents {
   }
 
   private initialize() {
-    const allEvents = [];
-    allEvents.concat(this.getUserEvents());
+    const allEvents = this.getUserEvents();
 
     this.eventEmitter = new EventEmitter(allEvents);
   }
