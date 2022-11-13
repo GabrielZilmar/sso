@@ -1,5 +1,8 @@
-import { UserDomainErrors } from "~modules/users/domain/errors";
+import UserDomainError, {
+  UserDomainErrors,
+} from "~modules/users/domain/errors";
 import { ValueObject } from "~shared/domain/value-object";
+import { Either, Left, Right } from "~shared/either";
 
 export interface UserNameProps {
   value: string;
@@ -25,11 +28,11 @@ export default class UserName extends ValueObject<UserNameProps> {
     return hasSpecialCharacterRegex.test(name) && isAppropriateLength;
   }
 
-  public static create(name: string): UserName {
+  public static create(name: string): Either<UserDomainError, UserName> {
     if (!this.isValid(name)) {
-      throw new Error(UserDomainErrors.invalidPassword);
+      return new Left(new UserDomainError(UserDomainErrors.invalidPassword));
     }
 
-    return new UserName({ value: name });
+    return new Right(new UserName({ value: name }));
   }
 }

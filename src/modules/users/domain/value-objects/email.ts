@@ -1,5 +1,8 @@
-import { UserDomainErrors } from "~modules/users/domain/errors";
+import UserDomainError, {
+  UserDomainErrors,
+} from "~modules/users/domain/errors";
 import { ValueObject } from "~shared/domain/value-object";
+import { Either, Left, Right } from "~shared/either";
 
 export interface UserEmailProps {
   value: string;
@@ -25,12 +28,11 @@ export default class UserEmail extends ValueObject<UserEmailProps> {
     return email.trim().toLowerCase();
   }
 
-  // TODO: implements an Either
-  public static create(email: string): UserEmail {
+  public static create(email: string): Either<UserDomainError, UserEmail> {
     if (!this.isValid(email)) {
-      throw new Error(UserDomainErrors.invalidEmail);
+      return new Left(new UserDomainError(UserDomainErrors.invalidEmail));
     }
 
-    return new UserEmail({ value: this.format(email) });
+    return new Right(new UserEmail({ value: this.format(email) }));
   }
 }

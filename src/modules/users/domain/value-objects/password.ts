@@ -1,7 +1,10 @@
 import bcrypt from "bcrypt";
-import { UserDomainErrors } from "~modules/users/domain/errors";
+import UserDomainError, {
+  UserDomainErrors,
+} from "~modules/users/domain/errors";
 import DependencyInjection from "~shared/dependency-injection";
 import { ValueObject } from "~shared/domain/value-object";
+import { Either, Left, Right } from "~shared/either";
 
 export interface UserPasswordProps {
   value: string;
@@ -38,12 +41,14 @@ export default class UserPassword extends ValueObject<UserPasswordProps> {
     return isEqual;
   }
 
-  public static async create(password: string): Promise<UserPassword> {
+  public static async create(
+    password: string
+  ): Promise<Either<UserDomainError, UserPassword>> {
     if (!this.isValid(password)) {
-      throw new Error(UserDomainErrors.invalidPassword);
+      return new Left(new Error(UserDomainErrors.invalidPassword));
     }
 
     const hashedPassword = await this.hashPassword(password);
-    return new UserPassword({ value: hashedPassword });
+    return new Right(new UserPassword({ value: hashedPassword }));
   }
 }
