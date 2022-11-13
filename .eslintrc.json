@@ -3,10 +3,11 @@
     "browser": true,
     "es2021": true
   },
-  "extends": "standard-with-typescript",
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "parser": "@typescript-eslint/parser",
   "overrides": [],
   "parserOptions": {
+    "project": ["./tsconfig.json"],
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
@@ -26,6 +27,7 @@
         "ts": "never",
         "tsx": "never"
       }
-    ]
+    ],
+    "no-unused-vars": "error"
   }
 }
