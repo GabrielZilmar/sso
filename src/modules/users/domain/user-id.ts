@@ -10,7 +10,6 @@ export default class UserId extends Entity<unknown> {
     super(null, id);
   }
 
-  // TODO: Implements Either
   public static create(id?: UniqueEntityID): UserId {
     return new UserId(id);
   }

@@ -1,10 +1,12 @@
-import { UserDomainErrors } from "~modules/users/domain/errors";
+import UserDomainError, {
+  UserDomainErrors,
+} from "~modules/users/domain/errors";
 import { UserCreatedEventPayload } from "~modules/users/domain/events-listeners/user-created";
 import { UserDeletedEventPayload } from "~modules/users/domain/events-listeners/user-deleted";
 import UserId from "~modules/users/domain/user-id";
 import { AggregateRoot } from "~shared/domain/aggregate-root";
-import { domainEvent } from "~shared/domain/events";
 import { UniqueEntityID } from "~shared/domain/unique-entity-id";
+import { Either, Left, Right } from "~shared/either";
 
 export interface UserProps {
   email: string;
@@ -71,9 +73,9 @@ export class User extends AggregateRoot<UserProps> {
   public static async create(
     props: UserProps,
     id?: UniqueEntityID
-  ): Promise<User> {
+  ): Promise<Either<UserDomainError, User>> {
     if (!this.isValid(props)) {
-      throw new Error(UserDomainErrors.invalidUserProps);
+      return new Left(new UserDomainError(UserDomainErrors.invalidUserProps));
     }
 
     const newUser = !id;
@@ -93,6 +95,6 @@ export class User extends AggregateRoot<UserProps> {
       await user.emitEvent("user.created", eventPayload);
     }
 
-    return user;
+    return new Right(user);
   }
 }
