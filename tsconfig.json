@@ -10,12 +10,14 @@
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "sourceMap": true,
     "baseUrl": "./",
     "paths": {
       "~modules/*": ["./src/modules/*"],
       "~services/*": ["./src/services/*"],
       "~types/*": ["./src/types/*"],
       "~shared/*": ["./src/shared/*"],
+      "~config/*": ["./src/config/*"],
       "~/*": ["./src*"]
     }
   }
