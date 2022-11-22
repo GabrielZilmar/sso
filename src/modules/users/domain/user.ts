@@ -13,7 +13,7 @@ export interface UserProps {
   name: string;
   password: string;
   isEmailVerified?: boolean;
-  isAdminUser?: boolean;
+  isAdmin?: boolean;
   isDeleted?: boolean;
   // TODO: Jwt tokens
 }
@@ -39,8 +39,8 @@ export class User extends AggregateRoot<UserProps> {
     return this.props.isEmailVerified;
   }
 
-  get isAdminUser(): boolean {
-    return this.props.isAdminUser;
+  get isAdmin(): boolean {
+    return this.props.isAdmin;
   }
 
   get isDeleted(): boolean {
@@ -85,7 +85,7 @@ export class User extends AggregateRoot<UserProps> {
         ...props,
         isDeleted: props.isDeleted || false,
         isEmailVerified: props.isEmailVerified || false,
-        isAdminUser: props.isAdminUser || false,
+        isAdmin: props.isAdmin || false,
       },
       id
     );
