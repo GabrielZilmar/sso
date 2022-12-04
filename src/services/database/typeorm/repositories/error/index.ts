@@ -2,6 +2,7 @@ export enum RepositoryErrors {
   createError = "Could not create the item.",
   updateError = "Could not update the item.",
   itemNotFound = "Item not found.",
+  itemDuplicated = "Item is duplicated",
   deleteError = "Could not delete the item.",
 }
 
