@@ -1,5 +1,12 @@
-import { FindOptionsWhere, Repository, UpdateResult } from "typeorm";
+import {
+  DeepPartial,
+  EntityTarget,
+  FindOptionsWhere,
+  Repository,
+  UpdateResult,
+} from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
+import { AppDataSource } from "~services/database/typeorm/data-source";
 import RepositoryError, {
   RepositoryErrors,
 } from "~services/database/typeorm/repositories/error";
@@ -9,10 +16,14 @@ import {
 } from "~services/database/typeorm/repositories/interfaces/interfaces";
 import { Either, Left, Right } from "~shared/either";
 
-export abstract class IBaseRepository<T extends { id: string }>
+export abstract class BaseRepository<T extends { id: string }>
   implements IWrite<T>, IRead<T>
 {
   public readonly repository: Repository<T>;
+
+  constructor(entity: EntityTarget<T>) {
+    this.repository = AppDataSource.getRepository(entity);
+  }
 
   private async preventInexistentItem(
     id: string
@@ -28,8 +39,8 @@ export abstract class IBaseRepository<T extends { id: string }>
     return new Right(true);
   }
 
-  async create(item: T): Promise<Either<RepositoryError, T>> {
-    const newItem = await this.repository.save<T>(item);
+  async create(item: DeepPartial<T>): Promise<Either<RepositoryError, T>> {
+    const newItem = await this.repository.save(item);
 
     if (newItem) {
       return new Right(newItem);
