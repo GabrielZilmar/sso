@@ -3,7 +3,6 @@ import {
   EntityTarget,
   FindOptionsWhere,
   Repository,
-  UpdateResult,
 } from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { AppDataSource } from "~services/database/typeorm/data-source";
@@ -52,7 +51,7 @@ export abstract class BaseRepository<T extends { id: string }>
   async update(
     id: string,
     item: QueryDeepPartialEntity<T>
-  ): Promise<Either<RepositoryError, UpdateResult>> {
+  ): Promise<Either<RepositoryError, boolean>> {
     const preventInexistent = await this.preventInexistentItem(id);
     if (preventInexistent.isLeft()) {
       return new Left(preventInexistent.value);
@@ -63,7 +62,7 @@ export abstract class BaseRepository<T extends { id: string }>
       return new Left(new RepositoryError(RepositoryErrors.updateError));
     }
 
-    return new Right(newItem);
+    return new Right(true);
   }
 
   async delete(id: string): Promise<Either<RepositoryError, boolean>> {
@@ -73,6 +72,8 @@ export abstract class BaseRepository<T extends { id: string }>
     }
 
     await this.repository.delete(id);
+
+    return new Right(true);
   }
 
   async find(criteria: FindOptionsWhere<T>): Promise<T[]> {

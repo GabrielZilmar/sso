@@ -1,4 +1,4 @@
-import { FindOptionsWhere, UpdateResult } from "typeorm";
+import { FindOptionsWhere } from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import RepositoryError from "~services/database/typeorm/repositories/error";
 import { Either } from "~shared/either";
@@ -8,7 +8,7 @@ export interface IWrite<T> {
   update(
     id: string,
     item: QueryDeepPartialEntity<T>
-  ): Promise<Either<RepositoryError, UpdateResult>>;
+  ): Promise<Either<RepositoryError, boolean>>;
   delete(id: string): Promise<Either<RepositoryError, boolean>>;
 }
 
