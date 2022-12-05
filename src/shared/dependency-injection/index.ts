@@ -1,6 +1,6 @@
 import { container, InjectionToken } from "tsyringe";
 import UserCreated from "~modules/users/domain/events-listeners/user-created";
-import UserRepository from "~services/database/typeorm/repositories/user.repository";
+import UserRepository from "~services/database/typeorm/repositories/user-repository";
 import ExpressWebServer from "~services/webserver/express/http-server";
 
 export type Environment = "prod" | "dev";
