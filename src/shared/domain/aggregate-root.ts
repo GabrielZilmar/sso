@@ -1,7 +1,6 @@
 import { EventName } from "@gabrielzilmar/event-emitter";
 import { Entity } from "~shared/domain/entity";
 import { domainEvent } from "~shared/domain/events";
-import DomainEvents from "~shared/domain/events/domain-events";
 import { IDomainEvent } from "~shared/domain/events/interface-domain-event";
 import { UniqueEntityID } from "~shared/domain/unique-entity-id";
 
