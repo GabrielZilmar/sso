@@ -18,7 +18,7 @@ export interface UserProps {
   // TODO: Jwt tokens
 }
 
-export class User extends AggregateRoot<UserProps> {
+export class UserDomain extends AggregateRoot<UserProps> {
   get userId(): UserId {
     return UserId.create(this._id);
   }
@@ -73,14 +73,14 @@ export class User extends AggregateRoot<UserProps> {
   public static async create(
     props: UserProps,
     id?: UniqueEntityID
-  ): Promise<Either<UserDomainError, User>> {
+  ): Promise<Either<UserDomainError, UserDomain>> {
     if (!this.isValid(props)) {
       return new Left(new UserDomainError(UserDomainErrors.invalidUserProps));
     }
 
     const newUser = !id;
 
-    const user = new User(
+    const user = new UserDomain(
       {
         ...props,
         isDeleted: props.isDeleted || false,
