@@ -29,7 +29,7 @@ export class User {
   isAdmin: boolean;
 
   @Column({ nullable: true })
-  deletedAt: Date;
+  deletedAt: Date | null;
 
   @CreateDateColumn()
   createdAt: Date;
