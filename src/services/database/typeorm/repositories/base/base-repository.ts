@@ -76,6 +76,12 @@ export abstract class BaseRepository<T extends { id: string }>
     return new Right(true);
   }
 
+  async findAll(): Promise<T[]> {
+    const items = await this.repository.find();
+
+    return items;
+  }
+
   async find(criteria: FindOptionsWhere<T>): Promise<T[]> {
     const items = await this.repository.findBy(criteria);
 
