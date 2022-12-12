@@ -23,7 +23,7 @@ export default class UserPassword extends ValueObject<UserPasswordProps> {
   }
 
   private static isValid(password: string): boolean {
-    return !password || password.length < this.minPasswordLength;
+    return !!password && password.length >= this.minPasswordLength;
   }
 
   private async hashPassword(password: string): Promise<string> {
