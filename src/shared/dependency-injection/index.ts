@@ -1,5 +1,6 @@
 import { container, InjectionToken } from "tsyringe";
 import UserCreated from "~modules/users/domain/events-listeners/user-created";
+import UserMapper from "~modules/users/mappers/user-mapper";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
 import ExpressWebServer from "~services/webserver/express/http-server";
 
@@ -11,6 +12,7 @@ export default class DependencyInjection {
     this.setupServices();
     this.setupEventListeners();
     this.setupRepositories();
+    this.setupMappers();
   }
 
   public static resolve<T>(token: InjectionToken<T>): T {
@@ -40,6 +42,12 @@ export default class DependencyInjection {
   private static setupRepositories() {
     container.register(UserRepository, {
       useClass: UserRepository,
+    });
+  }
+
+  public static setupMappers() {
+    container.register(UserMapper, {
+      useClass: UserMapper,
     });
   }
 }
