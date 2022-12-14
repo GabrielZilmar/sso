@@ -40,7 +40,7 @@ export default class UserPassword extends ValueObject<UserPasswordProps> {
   }
 
   public async getHashedValue(): Promise<string> {
-    if (this.isAlreadyHashed) {
+    if (this.isAlreadyHashed()) {
       return this.props.value;
     }
 
