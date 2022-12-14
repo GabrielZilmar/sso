@@ -23,7 +23,7 @@ export default class DependencyInjection {
     container.register("ENVIRONMENT", { useValue: process.env.NODE_ENV });
     container.register("PORT", { useValue: process.env.PORT });
     container.register("PASSWORD_SALT", {
-      useValue: process.env.PASSWORD_SALT,
+      useValue: Number(process.env.PASSWORD_SALT),
     });
   }
 
