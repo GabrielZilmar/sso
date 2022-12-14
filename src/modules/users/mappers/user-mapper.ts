@@ -1,5 +1,5 @@
 import UserDomainError from "~modules/users/domain/errors";
-import { UserDomain } from "~modules/users/domain/user";
+import { UserDomain } from "~modules/users/domain/user-domain";
 import UserEmail from "~modules/users/domain/value-objects/email";
 import UserName from "~modules/users/domain/value-objects/name";
 import UserPassword from "~modules/users/domain/value-objects/password";

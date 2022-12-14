@@ -1,5 +1,5 @@
 import { TriggersOn } from "@gabrielzilmar/event-emitter";
-import { UserDomain } from "~modules/users/domain/user";
+import { UserDomain } from "~modules/users/domain/user-domain";
 import { domainEvent } from "~shared/domain/events";
 
 export type UserCreatedEventPayload = {
