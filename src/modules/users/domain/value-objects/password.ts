@@ -8,6 +8,7 @@ import { Either, Left, Right } from "~shared/either";
 
 export interface UserPasswordProps {
   value: string;
+  isHashed?: boolean;
 }
 
 export default class UserPassword extends ValueObject<UserPasswordProps> {
@@ -22,10 +23,10 @@ export default class UserPassword extends ValueObject<UserPasswordProps> {
   }
 
   private static isValid(password: string): boolean {
-    return !password || password.length < this.minPasswordLength;
+    return !!password && password.length >= this.minPasswordLength;
   }
 
-  private static async hashPassword(password: string): Promise<string> {
+  private async hashPassword(password: string): Promise<string> {
     const hash = await bcrypt.hash(
       password,
       DependencyInjection.resolve("PASSWORD_SALT")
@@ -34,21 +35,36 @@ export default class UserPassword extends ValueObject<UserPasswordProps> {
     return hash;
   }
 
-  public async comparePassword(plainTextPassword: string): Promise<boolean> {
-    const passwordHashed = this.props.value;
-
-    const isEqual = await bcrypt.compare(plainTextPassword, passwordHashed);
-    return isEqual;
+  public isAlreadyHashed(): boolean {
+    return this.props.isHashed;
   }
 
-  public static async create(
-    password: string
-  ): Promise<Either<UserDomainError, UserPassword>> {
+  public async getHashedValue(): Promise<string> {
+    if (this.isAlreadyHashed()) {
+      return this.props.value;
+    }
+
+    const hashedValue = await this.hashPassword(this.props.value);
+    return hashedValue;
+  }
+
+  public async comparePassword(plainTextPassword: string): Promise<boolean> {
+    if (this.isAlreadyHashed()) {
+      const isEqual = await bcrypt.compare(plainTextPassword, this.props.value);
+      return isEqual;
+    }
+
+    return plainTextPassword === this.props.value;
+  }
+
+  public static create(
+    password: string,
+    isHashed = false
+  ): Either<UserDomainError, UserPassword> {
     if (!this.isValid(password)) {
       return new Left(new Error(UserDomainErrors.invalidPassword));
     }
 
-    const hashedPassword = await this.hashPassword(password);
-    return new Right(new UserPassword({ value: hashedPassword }));
+    return new Right(new UserPassword({ value: password, isHashed }));
   }
 }

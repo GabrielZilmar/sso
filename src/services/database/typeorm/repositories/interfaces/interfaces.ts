@@ -14,6 +14,7 @@ export interface IWrite<T> {
 
 export interface IRead<T> {
   find(criteria: FindOptionsWhere<T>): Promise<T[]>;
+  findAll(): Promise<T[]>;
   findOneByCriteria(criteria: FindOptionsWhere<T>): Promise<T | null>;
   findOneById(id: string): Promise<T | null>;
 }

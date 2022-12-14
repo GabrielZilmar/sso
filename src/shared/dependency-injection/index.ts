@@ -1,6 +1,7 @@
 import { container, InjectionToken } from "tsyringe";
 import UserCreated from "~modules/users/domain/events-listeners/user-created";
-import UserRepository from "~services/database/typeorm/repositories/user.repository";
+import UserMapper from "~modules/users/mappers/user-mapper";
+import UserRepository from "~services/database/typeorm/repositories/user-repository";
 import ExpressWebServer from "~services/webserver/express/http-server";
 
 export type Environment = "prod" | "dev";
@@ -11,6 +12,7 @@ export default class DependencyInjection {
     this.setupServices();
     this.setupEventListeners();
     this.setupRepositories();
+    this.setupMappers();
   }
 
   public static resolve<T>(token: InjectionToken<T>): T {
@@ -21,7 +23,7 @@ export default class DependencyInjection {
     container.register("ENVIRONMENT", { useValue: process.env.NODE_ENV });
     container.register("PORT", { useValue: process.env.PORT });
     container.register("PASSWORD_SALT", {
-      useValue: process.env.PASSWORD_SALT,
+      useValue: Number(process.env.PASSWORD_SALT),
     });
   }
 
@@ -40,6 +42,12 @@ export default class DependencyInjection {
   private static setupRepositories() {
     container.register(UserRepository, {
       useClass: UserRepository,
+    });
+  }
+
+  public static setupMappers() {
+    container.register(UserMapper, {
+      useClass: UserMapper,
     });
   }
 }

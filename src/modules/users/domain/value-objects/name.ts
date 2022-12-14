@@ -25,12 +25,12 @@ export default class UserName extends ValueObject<UserNameProps> {
     const isAppropriateLength =
       name.length <= this.maxNameLength && name.length >= this.minNameLength;
 
-    return hasSpecialCharacterRegex.test(name) && isAppropriateLength;
+    return !hasSpecialCharacterRegex.test(name) && isAppropriateLength;
   }
 
   public static create(name: string): Either<UserDomainError, UserName> {
     if (!this.isValid(name)) {
-      return new Left(new UserDomainError(UserDomainErrors.invalidPassword));
+      return new Left(new UserDomainError(UserDomainErrors.invalidName));
     }
 
     return new Right(new UserName({ value: name }));

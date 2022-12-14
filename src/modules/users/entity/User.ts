@@ -16,6 +16,9 @@ export class User {
   @Column({ unique: true })
   name: string;
 
+  @Column({ unique: true })
+  email: string;
+
   @Column()
   password: string;
 
@@ -26,7 +29,7 @@ export class User {
   isAdmin: boolean;
 
   @Column({ nullable: true })
-  deletedAt: Date;
+  deletedAt: Date | null;
 
   @CreateDateColumn()
   createdAt: Date;
