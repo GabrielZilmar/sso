@@ -1,15 +1,18 @@
 import { DeepPartial } from "typeorm";
 import { UserDomain } from "~modules/users/domain/user-domain";
 import { User } from "~modules/users/entity/User";
+import UserMapper from "~modules/users/mappers/user-mapper";
 import { BaseRepository } from "~services/database/typeorm/repositories/base/base-repository";
 import RepositoryError, {
   RepositoryErrors,
 } from "~services/database/typeorm/repositories/error";
+import DependencyInjection from "~shared/dependency-injection";
 import { Either, Left, Right } from "~shared/either";
 
 export default class UserRepository extends BaseRepository<User, UserDomain> {
   constructor() {
-    super(User);
+    const userMapper = DependencyInjection.resolve(UserMapper);
+    super(User, userMapper);
   }
 
   private async preventDuplicatedUser(

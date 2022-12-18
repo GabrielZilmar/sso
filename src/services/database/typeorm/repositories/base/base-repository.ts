@@ -22,8 +22,9 @@ export abstract class BaseRepository<T extends { id: string }, D>
   public readonly repository: Repository<T>;
   public readonly mapper: Mapper<D, T>;
 
-  constructor(entity: EntityTarget<T>) {
+  constructor(entity: EntityTarget<T>, mapper: Mapper<D, T>) {
     this.repository = AppDataSource.getRepository(entity);
+    this.mapper = mapper;
   }
 
   private async preventInexistentItem(
@@ -116,8 +117,11 @@ export abstract class BaseRepository<T extends { id: string }, D>
 
   async findOneByCriteria(criteria: FindOptionsWhere<T>): Promise<D | null> {
     const item = await this.repository.findOneBy(criteria);
-    const itemToDomain = await this.mapper.toDomain(item);
+    if (!item) {
+      return null;
+    }
 
+    const itemToDomain = await this.mapper.toDomain(item);
     return itemToDomain.isRight() ? itemToDomain.value : null;
   }
 
@@ -125,8 +129,11 @@ export abstract class BaseRepository<T extends { id: string }, D>
     const criteria = { id } as FindOptionsWhere<T>;
 
     const item = await this.repository.findOneBy(criteria);
-    const itemToDomain = await this.mapper.toDomain(item);
+    if (!item) {
+      return null;
+    }
 
+    const itemToDomain = await this.mapper.toDomain(item);
     return itemToDomain.isRight() ? itemToDomain.value : null;
   }
 }

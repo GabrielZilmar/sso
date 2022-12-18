@@ -7,12 +7,8 @@ import { User as UserEntity } from "~modules/users/entity/User";
 import { Mapper } from "~shared/domain/mapper";
 import { Either, Left, Right } from "~shared/either";
 
-type UserEntityWithoutTimestamp = Omit<UserEntity, "createdAt" | "updatedAt">;
-
 // TODO: Create GuardClass for Domains
-export default class UserMapper
-  implements Mapper<UserDomain, UserEntityWithoutTimestamp>
-{
+export default class UserMapper implements Mapper<UserDomain, UserEntity> {
   public async toDomain(
     user: UserEntity
   ): Promise<Either<UserDomainError, UserDomain>> {
@@ -48,9 +44,7 @@ export default class UserMapper
     return new Right(newUser.value);
   }
 
-  public async toPersistence(
-    user: UserDomain
-  ): Promise<UserEntityWithoutTimestamp> {
+  public async toPersistence(user: UserDomain): Promise<UserEntity> {
     let password: string = null;
     if (user.password) {
       if (user.password.isAlreadyHashed()) {
@@ -60,7 +54,7 @@ export default class UserMapper
       }
     }
 
-    const newUser: UserEntityWithoutTimestamp = {
+    const newUser = {
       id: user.id.toValue(),
       name: user.name.value,
       email: user.email.value,
@@ -68,7 +62,7 @@ export default class UserMapper
       isEmailVerified: user.isEmailVerified,
       isAdmin: user.isAdmin,
       deletedAt: user.isDeleted ? new Date() : null,
-    };
+    } as UserEntity;
 
     return newUser;
   }
