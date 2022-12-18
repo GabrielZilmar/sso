@@ -12,8 +12,8 @@ export default class JwtService implements JwtContract<JwtPayload> {
     return result;
   }
 
-  public signToken(payload: JwtPayload): string {
-    const result = jwt.sign(payload, this.jwtSecret);
+  public signToken(payload: JwtPayload, expiresIn = "1h"): string {
+    const result = jwt.sign(payload, this.jwtSecret, { expiresIn });
 
     return result;
   }
@@ -26,5 +26,17 @@ export default class JwtService implements JwtContract<JwtPayload> {
     } catch (err) {
       return false;
     }
+  }
+
+  public isTokenExpired(token: string): boolean {
+    try {
+      jwt.verify(token, this.jwtSecret);
+    } catch (err) {
+      if ((err as Error).message.includes("TokenExpired")) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
