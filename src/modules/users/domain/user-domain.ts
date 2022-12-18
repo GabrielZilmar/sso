@@ -81,7 +81,7 @@ export class UserDomain extends AggregateRoot<UserProps> {
       return new Left(new UserDomainError(UserDomainErrors.invalidUserProps));
     }
 
-    const newUser = !id;
+    const isNewUser = !id;
 
     const user = new UserDomain(
       {
@@ -93,7 +93,7 @@ export class UserDomain extends AggregateRoot<UserProps> {
       id
     );
 
-    if (newUser) {
+    if (isNewUser) {
       const eventPayload: UserCreatedEventPayload = { user };
       await user.emitEvent("user.created", eventPayload);
     }
