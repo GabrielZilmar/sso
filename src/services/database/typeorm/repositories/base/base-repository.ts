@@ -13,12 +13,14 @@ import {
   IRead,
   IWrite,
 } from "~services/database/typeorm/repositories/interfaces/interfaces";
+import { Mapper } from "~shared/domain/mapper";
 import { Either, Left, Right } from "~shared/either";
 
-export abstract class BaseRepository<T extends { id: string }>
-  implements IWrite<T>, IRead<T>
+export abstract class BaseRepository<T extends { id: string }, D>
+  implements IWrite<T, D>, IRead<T, D>
 {
   public readonly repository: Repository<T>;
+  public readonly mapper: Mapper<D, T>;
 
   constructor(entity: EntityTarget<T>) {
     this.repository = AppDataSource.getRepository(entity);
@@ -38,11 +40,17 @@ export abstract class BaseRepository<T extends { id: string }>
     return new Right(true);
   }
 
-  async create(item: DeepPartial<T>): Promise<Either<RepositoryError, T>> {
+  async create(item: DeepPartial<T>): Promise<Either<RepositoryError, D>> {
     const newItem = await this.repository.save(item);
 
     if (newItem) {
-      return new Right(newItem);
+      const newItemDomain = await this.mapper.toDomain(newItem);
+
+      if (newItemDomain.isLeft()) {
+        return new Left(new RepositoryError(RepositoryErrors.createError));
+      }
+
+      return new Right(newItemDomain.value);
     }
 
     return new Left(new RepositoryError(RepositoryErrors.createError));
@@ -76,28 +84,49 @@ export abstract class BaseRepository<T extends { id: string }>
     return new Right(true);
   }
 
-  async findAll(): Promise<T[]> {
+  async findAll(): Promise<D[]> {
     const items = await this.repository.find();
 
-    return items;
+    const itemsToDomain: D[] = [];
+    for await (const item of items) {
+      const itemToDomain = await this.mapper.toDomain(item);
+
+      if (itemToDomain.isRight()) {
+        itemsToDomain.push(itemToDomain.value);
+      }
+    }
+
+    return itemsToDomain;
   }
 
-  async find(criteria: FindOptionsWhere<T>): Promise<T[]> {
+  async find(criteria: FindOptionsWhere<T>): Promise<D[]> {
     const items = await this.repository.findBy(criteria);
 
-    return items;
+    const itemsToDomain: D[] = [];
+    for await (const item of items) {
+      const itemToDomain = await this.mapper.toDomain(item);
+
+      if (itemToDomain.isRight()) {
+        itemsToDomain.push(itemToDomain.value);
+      }
+    }
+
+    return itemsToDomain;
   }
 
-  async findOneByCriteria(criteria: FindOptionsWhere<T>): Promise<T | null> {
+  async findOneByCriteria(criteria: FindOptionsWhere<T>): Promise<D | null> {
     const item = await this.repository.findOneBy(criteria);
+    const itemToDomain = await this.mapper.toDomain(item);
 
-    return item || null;
+    return itemToDomain.isRight() ? itemToDomain.value : null;
   }
 
-  async findOneById(id: string): Promise<T | null> {
+  async findOneById(id: string): Promise<D | null> {
     const criteria = { id } as FindOptionsWhere<T>;
-    const item = await this.repository.findOneBy(criteria);
 
-    return item || null;
+    const item = await this.repository.findOneBy(criteria);
+    const itemToDomain = await this.mapper.toDomain(item);
+
+    return itemToDomain.isRight() ? itemToDomain.value : null;
   }
 }
