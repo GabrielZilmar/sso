@@ -19,8 +19,12 @@ export default class JwtService implements JwtContract<JwtPayload> {
   }
 
   public isValidToken(token: string): boolean {
-    const isValidToken = jwt.verify(token, this.jwtSecret);
+    try {
+      jwt.verify(token, this.jwtSecret);
 
-    return !!isValidToken;
+      return true;
+    } catch (err) {
+      return false;
+    }
   }
 }
