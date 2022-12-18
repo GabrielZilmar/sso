@@ -21,7 +21,18 @@ export default class AccessToken extends ValueObject<AccessTokenProps> {
   }
 
   get isAuth(): boolean {
+    const jwt = DependencyInjection.resolve(JwtService);
+
+    const isExpired = jwt.isTokenExpired(this.props.value);
+    this.props.isAuth = isExpired;
+
     return this.props.isAuth;
+  }
+
+  public getDecodedValue<T>(): T | null {
+    const jwt = DependencyInjection.resolve(JwtService);
+
+    return jwt.decodeToken(this.props.value) as T | null;
   }
 
   private static isValid(value: string): boolean {
