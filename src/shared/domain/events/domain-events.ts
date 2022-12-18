@@ -19,8 +19,16 @@ export default class DomainEvents {
     return events;
   }
 
+  private getAuthenticationEvents() {
+    const events = ["authentication.created"];
+
+    return events;
+  }
+
   private initialize() {
-    const allEvents = this.getUserEvents();
+    const userEvents = this.getUserEvents();
+    const authenticationEvents = this.getAuthenticationEvents();
+    const allEvents = userEvents.concat(authenticationEvents);
 
     this.eventEmitter = new EventEmitter(allEvents);
   }
