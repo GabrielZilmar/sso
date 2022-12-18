@@ -2,6 +2,7 @@ import { container, InjectionToken } from "tsyringe";
 import UserCreated from "~modules/users/domain/events-listeners/user-created";
 import UserMapper from "~modules/users/mappers/user-mapper";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
+import JwtService from "~services/jwt/jsonwebtoken";
 import ExpressWebServer from "~services/webserver/express/http-server";
 
 export type Environment = "prod" | "dev";
@@ -25,11 +26,15 @@ export default class DependencyInjection {
     container.register("PASSWORD_SALT", {
       useValue: Number(process.env.PASSWORD_SALT),
     });
+    container.register("JWT_SECRET", { useValue: process.env.JWT_SECRET });
   }
 
   private static setupServices() {
     container.register(ExpressWebServer, {
       useClass: ExpressWebServer,
+    });
+    container.register(JwtService, {
+      useClass: JwtService,
     });
   }
 
