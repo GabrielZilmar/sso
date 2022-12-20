@@ -29,7 +29,7 @@ export default class AuthenticationDomain extends AggregateRoot<AuthenticationDo
   private static isValid(props: AuthenticationDomainProps): boolean {
     const { accessToken, userId } = props;
 
-    return !accessToken || !userId;
+    return !!accessToken && !!userId;
   }
 
   public static async create(
