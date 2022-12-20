@@ -1,4 +1,5 @@
 import { container, InjectionToken } from "tsyringe";
+import AuthenticationCreated from "~modules/authentication/domain/events-listeners/auth-created";
 import UserCreated from "~modules/users/domain/events-listeners/user-created";
 import UserMapper from "~modules/users/mappers/user-mapper";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
@@ -41,6 +42,9 @@ export default class DependencyInjection {
   private static setupEventListeners() {
     container.register(UserCreated, {
       useClass: UserCreated,
+    });
+    container.register(AuthenticationCreated, {
+      useClass: AuthenticationCreated,
     });
   }
 
