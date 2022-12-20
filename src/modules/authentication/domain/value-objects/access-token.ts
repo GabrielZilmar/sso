@@ -35,20 +35,17 @@ export default class AccessToken extends ValueObject<AccessTokenProps> {
     return jwt.decodeToken(this.props.value) as T | null;
   }
 
-  private static isValid(value: string): boolean {
-    const jwt = DependencyInjection.resolve(JwtService);
+  private static isValid<T>(props: T): boolean {
+    const isValidObject =
+      !!props && typeof props === "object" && !Array.isArray(props);
 
-    if (jwt.isTokenExpired(value)) {
-      return true;
-    }
-
-    return jwt.isValidToken(value);
+    return isValidObject;
   }
 
-  public static create(
-    token: string
+  public static create<T>(
+    props: T
   ): Either<AuthenticationDomainError, AccessToken> {
-    if (!this.isValid(token)) {
+    if (!this.isValid<T>(props)) {
       return new Left(
         new AuthenticationDomainError(
           AuthenticationDomainErrors.invalidAuthenticationAccessToken
@@ -57,6 +54,8 @@ export default class AccessToken extends ValueObject<AccessTokenProps> {
     }
 
     const jwt = DependencyInjection.resolve(JwtService);
+
+    const token = jwt.signToken(props);
     const isAuth = !jwt.isTokenExpired(token);
 
     return new Right(new AccessToken({ value: token, isAuth }));
