@@ -18,7 +18,6 @@ export interface UserProps {
   isEmailVerified?: boolean;
   isAdmin?: boolean;
   deletedAt?: Date | null;
-  // TODO: Jwt tokens
 }
 
 export class UserDomain extends AggregateRoot<UserProps> {
