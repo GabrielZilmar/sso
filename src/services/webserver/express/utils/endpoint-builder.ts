@@ -1,5 +1,5 @@
-import { HttpMethod } from "~types/http-methods";
 import { Router, Request, Response, NextFunction } from "express";
+import { Http } from "~services/webserver/types";
 
 type IHandler = (req: Request, res: Response) => Promise<void> | void;
 
@@ -10,7 +10,7 @@ type IPipe = (
 ) => Promise<void> | void;
 
 class EndpointBuilder {
-  private httpMethod: HttpMethod;
+  private httpMethod: Http.Methods;
   private path: string;
   private handler: IHandler;
   private pipes: IPipe[];
@@ -40,7 +40,7 @@ class EndpointBuilder {
     return this;
   }
 
-  public setHttpMethod(httpMethod: HttpMethod): EndpointBuilder {
+  public setHttpMethod(httpMethod: Http.Methods): EndpointBuilder {
     this.httpMethod = httpMethod;
     return this;
   }
@@ -54,19 +54,19 @@ class EndpointBuilder {
     return this.path;
   }
 
-  public getHttpMethod(): HttpMethod {
+  public getHttpMethod(): Http.Methods {
     return this.httpMethod;
   }
 
   public register(route: Router): void {
     switch (this.httpMethod) {
-      case HttpMethod.DELETE:
+      case Http.Methods.DELETE:
         route.delete(this.path, ...[...this.pipes, this.handler]);
         break;
-      case HttpMethod.POST:
+      case Http.Methods.POST:
         route.post(this.path, ...[...this.pipes, this.handler]);
         break;
-      case HttpMethod.PUT:
+      case Http.Methods.PUT:
         route.put(this.path, ...[...this.pipes, this.handler]);
         break;
       default:
