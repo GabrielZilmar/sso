@@ -19,6 +19,7 @@ const validateObject = (
 
   if (error) {
     res.status(Http.Status.BAD_REQUEST).send(error);
+    throw new Error(`Invalid request.`);
   }
 };
 
