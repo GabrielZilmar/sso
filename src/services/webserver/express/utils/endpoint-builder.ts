@@ -3,7 +3,7 @@ import { Http } from "~services/webserver/types";
 
 type IHandler = (req: Request, res: Response) => Promise<void> | void;
 
-type IPipe = (
+export type IPipe = (
   req: Request,
   res: Response,
   next: NextFunction
