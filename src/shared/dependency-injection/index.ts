@@ -3,6 +3,7 @@ import AuthenticationCreated from "~modules/authentication/domain/events-listene
 import UserCreated from "~modules/users/domain/events-listeners/user-created";
 import UserMapper from "~modules/users/mappers/user-mapper";
 import GetUser from "~modules/users/use-cases/get-user";
+import GetUserByName from "~modules/users/use-cases/get-user-by-name";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
 import JwtService from "~services/jwt/jsonwebtoken";
 import ExpressWebServer from "~services/webserver/express/http-server";
@@ -65,6 +66,9 @@ export default class DependencyInjection {
   public static setupUseCases() {
     container.register(GetUser, {
       useClass: GetUser,
+    });
+    container.register(GetUserByName, {
+      useClass: GetUserByName,
     });
   }
 }
