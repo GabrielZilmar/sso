@@ -85,8 +85,11 @@ export abstract class BaseRepository<T extends { id: string }, D>
     return new Right(true);
   }
 
-  async findAll(): Promise<D[]> {
-    const items = await this.repository.find();
+  async findAll(skip = 0, take = 10): Promise<{ items: D[]; count: number }> {
+    const [items, count] = await this.repository.findAndCount({
+      skip,
+      take,
+    });
 
     const itemsToDomain: D[] = [];
     for await (const item of items) {
@@ -97,7 +100,7 @@ export abstract class BaseRepository<T extends { id: string }, D>
       }
     }
 
-    return itemsToDomain;
+    return { items: itemsToDomain, count };
   }
 
   async find(criteria: FindOptionsWhere<T>): Promise<D[]> {
