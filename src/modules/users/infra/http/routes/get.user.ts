@@ -16,7 +16,7 @@ interface GetUserRequest extends Request {
   };
 }
 
-export default EndpointBuilder.new("/api/get-user/:idOrName")
+export default EndpointBuilder.new("/api/user/:idOrName")
   .setHttpMethod(Http.Methods.GET)
   .addPipe(
     requestValidation({

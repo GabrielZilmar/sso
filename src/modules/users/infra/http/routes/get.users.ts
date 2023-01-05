@@ -13,7 +13,7 @@ interface GetUsersRequest extends Request {
   };
 }
 
-export default EndpointBuilder.new("/api/get-users?")
+export default EndpointBuilder.new("/api/users?")
   .setHttpMethod(Http.Methods.GET)
   .addPipe(
     requestValidation({
