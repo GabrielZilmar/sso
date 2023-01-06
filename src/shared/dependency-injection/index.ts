@@ -2,6 +2,7 @@ import { container, InjectionToken } from "tsyringe";
 import AuthenticationCreated from "~modules/authentication/domain/events-listeners/auth-created";
 import UserCreated from "~modules/users/domain/events-listeners/user-created";
 import UserMapper from "~modules/users/mappers/user-mapper";
+import DeleteUser from "~modules/users/use-cases/delete-user";
 import GetUser from "~modules/users/use-cases/get-user";
 import GetUserByName from "~modules/users/use-cases/get-user-by-name";
 import GetUsers from "~modules/users/use-cases/get-users";
@@ -73,6 +74,9 @@ export default class DependencyInjection {
     });
     container.register(GetUsers, {
       useClass: GetUsers,
+    });
+    container.register(DeleteUser, {
+      useClass: DeleteUser,
     });
   }
 }
