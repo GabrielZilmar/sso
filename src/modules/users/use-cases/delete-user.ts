@@ -1,4 +1,5 @@
 import { injectable } from "tsyringe";
+import UserMapper from "~modules/users/mappers/user-mapper";
 import UserUseCaseError, {
   UserUseCaseErrors,
 } from "~modules/users/use-cases/error";
@@ -17,19 +18,38 @@ export default class DeleteUser
   implements UseCase<DeleteUserParams, DeleteUserResponse>
 {
   private userRepository: UserRepository;
+  private userMapper: UserMapper;
 
-  constructor(userRepository: UserRepository) {
+  constructor(userRepository: UserRepository, userMapper: UserMapper) {
     this.userRepository = userRepository;
+    this.userMapper = userMapper;
   }
 
   public async execute(request: DeleteUserParams): Promise<DeleteUserResponse> {
     const { id } = request;
 
-    const userHasDeleted = await this.userRepository.delete(id);
-    if (userHasDeleted.isLeft()) {
+    const user = await this.userRepository.findOneById(id);
+    if (!user) {
       return new Left(new UserUseCaseError(UserUseCaseErrors.userNotFound(id)));
     }
 
-    return new Right(userHasDeleted.value);
+    if (user.isDeleted) {
+      return new Left(
+        new UserUseCaseError(UserUseCaseErrors.userIsAlreadyDeleted(id))
+      );
+    }
+
+    await user.delete();
+    const userHasDeleted = await this.userRepository.save(
+      await this.userMapper.toPersistence(user)
+    );
+
+    if (userHasDeleted.isLeft()) {
+      return new Left(
+        new UserUseCaseError(UserUseCaseErrors.couldNotSaveUser(id))
+      );
+    }
+
+    return new Right(true);
   }
 }
