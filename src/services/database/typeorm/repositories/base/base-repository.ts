@@ -106,17 +106,12 @@ export abstract class BaseRepository<T extends { id: string }, D>
     try {
       const savedItem = await this.repository.save(item);
 
-      if (savedItem) {
-        const itemDomain = await this.mapper.toDomain(savedItem);
-
-        if (itemDomain.isLeft()) {
-          return new Left(new RepositoryError(RepositoryErrors.saveError));
-        }
-
-        return new Right(itemDomain.value);
+      const itemDomain = await this.mapper.toDomain(savedItem);
+      if (itemDomain.isLeft()) {
+        return new Left(new RepositoryError(RepositoryErrors.saveError));
       }
 
-      return new Left(new RepositoryError(RepositoryErrors.saveError));
+      return new Right(itemDomain.value);
     } catch (err) {
       return new Left(
         new RepositoryError(RepositoryErrors.saveError, (err as Error).message)
