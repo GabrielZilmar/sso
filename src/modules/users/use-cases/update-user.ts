@@ -9,7 +9,7 @@ import UserRepository from "~services/database/typeorm/repositories/user-reposit
 import { UseCase } from "~shared/core/use-case";
 import { Either, Left, Right } from "~shared/either";
 
-type UpdateUserRequest = {
+type UpdateUserParams = {
   id: string;
   user: {
     name?: string;
@@ -20,7 +20,7 @@ type UpdateUserResponse = Either<UserUseCaseError, UserDTO>;
 
 @injectable()
 export default class UpdateUser
-  implements UseCase<UpdateUserRequest, UpdateUserResponse>
+  implements UseCase<UpdateUserParams, UpdateUserResponse>
 {
   private userRepository: UserRepository;
   private userMapper: UserMapper;
@@ -30,7 +30,7 @@ export default class UpdateUser
     this.userMapper = userMapper;
   }
 
-  async execute(request: UpdateUserRequest): Promise<UpdateUserResponse> {
+  async execute(request: UpdateUserParams): Promise<UpdateUserResponse> {
     const {
       id,
       user: { name },
