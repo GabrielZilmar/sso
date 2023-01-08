@@ -33,5 +33,5 @@ export default EndpointBuilder.new("/api/users?")
       offset: Number(offset),
     });
 
-    res.status(200).send(users);
+    res.status(Http.Status.OK).send(users);
   });
