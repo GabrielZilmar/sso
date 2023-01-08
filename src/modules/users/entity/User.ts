@@ -2,13 +2,11 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  Check,
   CreateDateColumn,
   UpdateDateColumn,
 } from "typeorm";
 
 @Entity()
-@Check(`"deleted_at" IS NULL`)
 export class User {
   @PrimaryGeneratedColumn("uuid")
   id: string;
