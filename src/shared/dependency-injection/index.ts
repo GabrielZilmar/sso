@@ -7,6 +7,7 @@ import DeleteUser from "~modules/users/use-cases/delete-user";
 import GetUser from "~modules/users/use-cases/get-user";
 import GetUserByName from "~modules/users/use-cases/get-user-by-name";
 import GetUsers from "~modules/users/use-cases/get-users";
+import UpdateUser from "~modules/users/use-cases/update-user";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
 import JwtService from "~services/jwt/jsonwebtoken";
 import ExpressWebServer from "~services/webserver/express/http-server";
@@ -81,6 +82,9 @@ export default class DependencyInjection {
     });
     container.register(DeleteUser, {
       useClass: DeleteUser,
+    });
+    container.register(UpdateUser, {
+      useClass: UpdateUser,
     });
   }
 }
