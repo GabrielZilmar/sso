@@ -72,7 +72,7 @@ export class UserDomain extends AggregateRoot<UserProps> {
         userEmail: this.email.value,
         deletedTime: new Date(),
       };
-      await this.emitEvent("user.created", eventPayload);
+      await this.emitEvent("user.deleted", eventPayload);
     }
   }
 
