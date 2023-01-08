@@ -41,20 +41,37 @@ export abstract class BaseRepository<T extends { id: string }, D>
     return new Right(true);
   }
 
-  async create(item: DeepPartial<T>): Promise<Either<RepositoryError, D>> {
-    const newItem = await this.repository.save(item);
+  private async preventDuplicateItem(
+    id: string
+  ): Promise<Either<RepositoryError, boolean>> {
+    const itemExist = await this.findOneById(id);
 
-    if (newItem) {
-      const newItemDomain = await this.mapper.toDomain(newItem);
-
-      if (newItemDomain.isLeft()) {
-        return new Left(new RepositoryError(RepositoryErrors.createError));
-      }
-
-      return new Right(newItemDomain.value);
+    if (itemExist) {
+      return new Left(
+        new RepositoryError(RepositoryErrors.itemAlreadyExists, { id })
+      );
     }
 
-    return new Left(new RepositoryError(RepositoryErrors.createError));
+    return new Right(true);
+  }
+
+  async create(item: DeepPartial<T>): Promise<Either<RepositoryError, D>> {
+    if (item.id) {
+      const preventInexistent = await this.preventDuplicateItem(item.id);
+      if (preventInexistent.isLeft()) {
+        return new Left(preventInexistent.value);
+      }
+    }
+
+    const newItem = await this.save(item);
+
+    if (newItem.isLeft()) {
+      return new Left(
+        new RepositoryError(RepositoryErrors.createError, newItem.value.payload)
+      );
+    }
+
+    return new Right(newItem.value);
   }
 
   async update(
@@ -83,6 +100,28 @@ export abstract class BaseRepository<T extends { id: string }, D>
     await this.repository.delete(id);
 
     return new Right(true);
+  }
+
+  async save(item: T | DeepPartial<T>): Promise<Either<RepositoryError, D>> {
+    try {
+      const savedItem = await this.repository.save(item);
+
+      if (savedItem) {
+        const itemDomain = await this.mapper.toDomain(savedItem);
+
+        if (itemDomain.isLeft()) {
+          return new Left(new RepositoryError(RepositoryErrors.saveError));
+        }
+
+        return new Right(itemDomain.value);
+      }
+
+      return new Left(new RepositoryError(RepositoryErrors.saveError));
+    } catch (err) {
+      return new Left(
+        new RepositoryError(RepositoryErrors.saveError, (err as Error).message)
+      );
+    }
   }
 
   async findAll(skip = 0, take = 10): Promise<{ items: D[]; count: number }> {
