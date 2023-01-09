@@ -45,7 +45,7 @@ export default class UpdateUser
     if (userName.isLeft()) {
       return new Left(
         new UserUseCaseError(
-          UserUseCaseErrors.invalidUserUpdateProps({
+          UserUseCaseErrors.invalidUserProps({
             name: userName.value.message,
           })
         )
