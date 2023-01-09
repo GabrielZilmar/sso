@@ -62,7 +62,7 @@ export default class UserMapper implements Mapper<UserDomain, UserEntity> {
     }
 
     const newUser = {
-      id: user.id.toValue(),
+      id: user.id?.toValue(),
       name: user.name.value,
       email: user.email.value,
       password,
