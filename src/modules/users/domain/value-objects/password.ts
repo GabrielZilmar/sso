@@ -31,6 +31,8 @@ export default class UserPassword extends ValueObject<UserPasswordProps> {
       password,
       DependencyInjection.resolve("PASSWORD_SALT")
     );
+    this.props.value = hash;
+    this.props.isHashed = true;
 
     return hash;
   }
