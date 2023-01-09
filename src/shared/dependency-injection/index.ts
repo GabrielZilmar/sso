@@ -3,6 +3,7 @@ import AuthenticationCreated from "~modules/authentication/domain/events-listene
 import UserCreated from "~modules/users/domain/events-listeners/user-created";
 import UserDeleted from "~modules/users/domain/events-listeners/user-deleted";
 import UserMapper from "~modules/users/mappers/user-mapper";
+import CreateUser from "~modules/users/use-cases/create-user";
 import DeleteUser from "~modules/users/use-cases/delete-user";
 import GetUser from "~modules/users/use-cases/get-user";
 import GetUserByName from "~modules/users/use-cases/get-user-by-name";
@@ -85,6 +86,9 @@ export default class DependencyInjection {
     });
     container.register(UpdateUser, {
       useClass: UpdateUser,
+    });
+    container.register(CreateUser, {
+      useClass: CreateUser,
     });
   }
 }
