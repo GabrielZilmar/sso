@@ -9,20 +9,34 @@ import RepositoryError, {
 import DependencyInjection from "~shared/dependency-injection";
 import { Either, Left, Right } from "~shared/either";
 
+export type PreventDuplicatedParams = {
+  name: string;
+  email: string;
+};
+
 export default class UserRepository extends BaseRepository<User, UserDomain> {
   constructor() {
     const userMapper = DependencyInjection.resolve(UserMapper);
     super(User, userMapper);
   }
 
-  private async preventDuplicatedUser(
-    name: string
-  ): Promise<Either<RepositoryError, boolean>> {
-    const itemExist = await this.findOneByCriteria({ name });
+  private async preventDuplicatedUser({
+    name,
+    email,
+  }: PreventDuplicatedParams): Promise<Either<RepositoryError, boolean>> {
+    const itemExist = await this.findOneByCriteria([{ name }, { email }]);
 
     if (itemExist) {
+      const itemsDuplicated: { name?: string; email?: string } = {};
+      if (itemExist.name.value === name) {
+        itemsDuplicated.name = name;
+      }
+      if (itemExist.email.value === email) {
+        itemsDuplicated.email = email;
+      }
+
       return new Left(
-        new RepositoryError(RepositoryErrors.itemDuplicated, { name })
+        new RepositoryError(RepositoryErrors.itemDuplicated, itemsDuplicated)
       );
     }
 
@@ -32,7 +46,10 @@ export default class UserRepository extends BaseRepository<User, UserDomain> {
   async create(
     item: DeepPartial<User>
   ): Promise<Either<RepositoryError, UserDomain>> {
-    const preventDuplicated = await this.preventDuplicatedUser(item.name);
+    const preventDuplicated = await this.preventDuplicatedUser({
+      name: item.name,
+      email: item.email,
+    });
     if (preventDuplicated.isLeft()) {
       return new Left(preventDuplicated.value);
     }
