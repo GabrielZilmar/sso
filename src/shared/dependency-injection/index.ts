@@ -1,7 +1,14 @@
 import { container, InjectionToken } from "tsyringe";
 import AuthenticationCreated from "~modules/authentication/domain/events-listeners/auth-created";
 import UserCreated from "~modules/users/domain/events-listeners/user-created";
+import UserDeleted from "~modules/users/domain/events-listeners/user-deleted";
 import UserMapper from "~modules/users/mappers/user-mapper";
+import CreateUser from "~modules/users/use-cases/create-user";
+import DeleteUser from "~modules/users/use-cases/delete-user";
+import GetUser from "~modules/users/use-cases/get-user";
+import GetUserByName from "~modules/users/use-cases/get-user-by-name";
+import GetUsers from "~modules/users/use-cases/get-users";
+import UpdateUser from "~modules/users/use-cases/update-user";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
 import JwtService from "~services/jwt/jsonwebtoken";
 import ExpressWebServer from "~services/webserver/express/http-server";
@@ -15,6 +22,7 @@ export default class DependencyInjection {
     this.setupEventListeners();
     this.setupRepositories();
     this.setupMappers();
+    this.setupUseCases();
   }
 
   public static resolve<T>(token: InjectionToken<T>): T {
@@ -43,6 +51,9 @@ export default class DependencyInjection {
     container.register(UserCreated, {
       useClass: UserCreated,
     });
+    container.register(UserDeleted, {
+      useClass: UserDeleted,
+    });
     container.register(AuthenticationCreated, {
       useClass: AuthenticationCreated,
     });
@@ -57,6 +68,27 @@ export default class DependencyInjection {
   public static setupMappers() {
     container.register(UserMapper, {
       useClass: UserMapper,
+    });
+  }
+
+  public static setupUseCases() {
+    container.register(GetUser, {
+      useClass: GetUser,
+    });
+    container.register(GetUserByName, {
+      useClass: GetUserByName,
+    });
+    container.register(GetUsers, {
+      useClass: GetUsers,
+    });
+    container.register(DeleteUser, {
+      useClass: DeleteUser,
+    });
+    container.register(UpdateUser, {
+      useClass: UpdateUser,
+    });
+    container.register(CreateUser, {
+      useClass: CreateUser,
     });
   }
 }

@@ -45,8 +45,12 @@ export class UserDomain extends AggregateRoot<UserProps> {
     return this.props.isAdmin;
   }
 
-  get isDeleted(): Date | null {
+  get deletedAt(): Date | null {
     return this.props.deletedAt;
+  }
+
+  get isDeleted(): boolean {
+    return !!this.props.deletedAt;
   }
 
   private constructor(props: UserProps, id?: UniqueEntityID) {
@@ -68,7 +72,7 @@ export class UserDomain extends AggregateRoot<UserProps> {
         userEmail: this.email.value,
         deletedTime: new Date(),
       };
-      await this.emitEvent("user.created", eventPayload);
+      await this.emitEvent("user.deleted", eventPayload);
     }
   }
 

@@ -8,9 +8,9 @@ export type UserDeletedEventPayload = {
   deletedTime: Date;
 };
 
-export default class UserCreated {
+export default class UserDeleted {
   @TriggersOn("user.deleted", domainEvent.eventEmitter)
-  public userCreated(payload: UserDeletedEventPayload) {
+  public userDeleted(payload: UserDeletedEventPayload) {
     console.info("User deleted!");
     console.info(payload);
   }
