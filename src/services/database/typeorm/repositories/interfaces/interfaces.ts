@@ -14,8 +14,10 @@ export interface IWrite<T, D> {
 }
 
 export interface IRead<T, D> {
-  find(criteria: FindOptionsWhere<T>): Promise<D[]>;
+  find(criteria: FindOptionsWhere<T> | FindOptionsWhere<T>[]): Promise<D[]>;
   findAll(): Promise<{ items: D[]; count: number }>;
-  findOneByCriteria(criteria: FindOptionsWhere<T>): Promise<D | null>;
+  findOneByCriteria(
+    criteria: FindOptionsWhere<T> | FindOptionsWhere<T>[]
+  ): Promise<D | null>;
   findOneById(id: string): Promise<D | null>;
 }
