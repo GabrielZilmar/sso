@@ -37,9 +37,9 @@ export default class UserRepository extends BaseRepository<User, UserDomain> {
       return new Left(preventDuplicated.value);
     }
 
-    const newItem = await this.repository.save(item);
+    try {
+      const newItem = await this.repository.save(item);
 
-    if (newItem) {
       const newItemDomain = await this.mapper.toDomain(newItem);
 
       if (newItemDomain.isLeft()) {
@@ -47,8 +47,13 @@ export default class UserRepository extends BaseRepository<User, UserDomain> {
       }
 
       return new Right(newItemDomain.value);
+    } catch (err) {
+      return new Left(
+        new RepositoryError(
+          RepositoryErrors.createError,
+          (err as Error).message
+        )
+      );
     }
-
-    return new Left(new RepositoryError(RepositoryErrors.createError));
   }
 }
