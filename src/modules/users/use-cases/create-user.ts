@@ -9,7 +9,9 @@ import UserMapper from "~modules/users/mappers/user-mapper";
 import UserUseCaseError, {
   UserUseCaseErrors,
 } from "~modules/users/use-cases/error";
-import UserRepository from "~services/database/typeorm/repositories/user-repository";
+import UserRepository, {
+  PreventDuplicatedParams,
+} from "~services/database/typeorm/repositories/user-repository";
 import { Http } from "~services/webserver/types";
 import { UseCase } from "~shared/core/use-case";
 import { Either, Left, Right } from "~shared/either";
@@ -109,12 +111,21 @@ export default class CreateUser
 
     const newUserFromDb = await this.userRepository.create(userPersistence);
     if (newUserFromDb.isLeft()) {
-      if (newUserFromDb.value.message.includes("duplicated")) {
+      const errorMessage = newUserFromDb.value.message;
+
+      if (errorMessage.includes("duplicated")) {
+        let useCaseErrorMessage: string;
+        const errorPayload = newUserFromDb.value
+          .payload as PreventDuplicatedParams;
+
+        if (errorPayload?.name) {
+          useCaseErrorMessage = UserUseCaseErrors.duplicatedUserName(name);
+        } else {
+          useCaseErrorMessage = UserUseCaseErrors.duplicatedUserEmail(email);
+        }
+
         return new Left(
-          new UserUseCaseError(
-            UserUseCaseErrors.duplicatedItem(name),
-            Http.Status.BAD_REQUEST
-          )
+          new UserUseCaseError(useCaseErrorMessage, Http.Status.BAD_REQUEST)
         );
       }
 
