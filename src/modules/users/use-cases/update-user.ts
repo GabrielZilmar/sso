@@ -6,6 +6,7 @@ import UserUseCaseError, {
   UserUseCaseErrors,
 } from "~modules/users/use-cases/error";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
+import { Http } from "~services/webserver/types";
 import { UseCase } from "~shared/core/use-case";
 import { Either, Left, Right } from "~shared/either";
 
@@ -38,7 +39,12 @@ export default class UpdateUser
 
     const user = await this.userRepository.findOneById(id);
     if (!user) {
-      return new Left(new UserUseCaseError(UserUseCaseErrors.userNotFound(id)));
+      return new Left(
+        new UserUseCaseError(
+          UserUseCaseErrors.userNotFound(id),
+          Http.Status.NOT_FOUND
+        )
+      );
     }
 
     const userName = UserName.create(name);
@@ -47,7 +53,8 @@ export default class UpdateUser
         new UserUseCaseError(
           UserUseCaseErrors.invalidUserProps({
             name: userName.value.message,
-          })
+          }),
+          Http.Status.BAD_REQUEST
         )
       );
     }
@@ -60,7 +67,10 @@ export default class UpdateUser
 
     if (updatedUser.isLeft()) {
       return new Left(
-        new UserUseCaseError(UserUseCaseErrors.couldNotUpdateUser)
+        new UserUseCaseError(
+          UserUseCaseErrors.couldNotUpdateUser,
+          Http.Status.INTERNAL_SERVER_ERROR
+        )
       );
     }
 

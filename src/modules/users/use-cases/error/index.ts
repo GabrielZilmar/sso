@@ -12,8 +12,11 @@ export const UserUseCaseErrors = {
 };
 
 export default class UserUseCaseError extends Error {
-  constructor(message: string) {
+  public readonly status: number;
+
+  constructor(message: string, status: number) {
     super(message);
+    this.status = status;
     this.name = "user-use-case";
   }
 }

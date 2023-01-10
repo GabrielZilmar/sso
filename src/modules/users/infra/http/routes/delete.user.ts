@@ -30,7 +30,9 @@ export default EndpointBuilder.new("/api/user/:id")
     const userHasDeleted = await deleteUser.execute({ id });
 
     if (userHasDeleted.isLeft()) {
-      res.status(Http.Status.NOT_FOUND).send({
+      const status = userHasDeleted.value.status;
+
+      res.status(status).send({
         error: userHasDeleted.value.message,
       });
       return;

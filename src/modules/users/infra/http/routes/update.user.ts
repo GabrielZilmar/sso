@@ -36,10 +36,7 @@ export default EndpointBuilder.new("/api/user/:id")
     const userUpdated = await updateUser.execute({ id, user: { name } });
 
     if (userUpdated.isLeft()) {
-      let status = Http.Status.BAD_REQUEST;
-      if (userUpdated.value.message.includes("Something")) {
-        status = Http.Status.INTERNAL_SERVER_ERROR;
-      }
+      const status = userUpdated.value.status;
 
       res.status(status).send({ error: userUpdated.value.message });
       return;
