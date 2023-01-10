@@ -30,10 +30,7 @@ export default EndpointBuilder.new("/api/user")
 
     const userOrError = await createdUser.execute({ email, name, password });
     if (userOrError.isLeft()) {
-      let status = Http.Status.BAD_REQUEST;
-      if (userOrError.value.message.includes("Something")) {
-        status = Http.Status.INTERNAL_SERVER_ERROR;
-      }
+      const status = userOrError.value.status;
 
       res.status(status).send({ error: userOrError.value.message });
       return;
