@@ -109,7 +109,6 @@ export default class CreateUser
 
     const newUserFromDb = await this.userRepository.create(userPersistence);
     if (newUserFromDb.isLeft()) {
-      // TODO: Send status on error
       if (newUserFromDb.value.message.includes("duplicated")) {
         return new Left(
           new UserUseCaseError(
