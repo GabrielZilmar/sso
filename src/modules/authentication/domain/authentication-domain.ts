@@ -3,14 +3,14 @@ import AuthenticationDomainError, {
 } from "~modules/authentication/domain/errors";
 import { AuthenticationCreatedEventPayload } from "~modules/authentication/domain/events-listeners/auth-created";
 import AccessToken from "~modules/authentication/domain/value-objects/access-token";
-import AuthenticationUserId from "~modules/authentication/domain/value-objects/authentication-user-id";
 import { AggregateRoot } from "~shared/domain/aggregate-root";
 import { UniqueEntityID } from "~shared/domain/unique-entity-id";
 import { Either, Left, Right } from "~shared/either";
+import Validator from "~shared/validator";
 
 export interface AuthenticationDomainProps {
   accessToken: AccessToken;
-  userId: AuthenticationUserId;
+  userId: string;
 }
 
 export default class AuthenticationDomain extends AggregateRoot<AuthenticationDomainProps> {
@@ -22,14 +22,15 @@ export default class AuthenticationDomain extends AggregateRoot<AuthenticationDo
     return this.props.accessToken;
   }
 
-  get userId(): AuthenticationUserId {
+  get userId(): string {
     return this.props.userId;
   }
 
   private static isValid(props: AuthenticationDomainProps): boolean {
     const { accessToken, userId } = props;
+    const isValidUserId = Validator.isValidUuid(userId);
 
-    return !!accessToken && !!userId;
+    return !!accessToken && isValidUserId;
   }
 
   public static async create(
