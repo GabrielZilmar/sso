@@ -20,6 +20,7 @@ const authenticationPipe: IPipe = (req, res, next): void => {
     return;
   }
 
+  req.state = { token: jwtToken.decodeToken(authorization) };
   next();
 };
 
