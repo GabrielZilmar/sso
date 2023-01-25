@@ -11,6 +11,7 @@ import GetUserByName from "~modules/users/use-cases/get-user-by-name";
 import GetUsers from "~modules/users/use-cases/get-users";
 import UpdateUser from "~modules/users/use-cases/update-user";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
+import EmailSender from "~services/email-sender/nodemailer";
 import JwtService from "~services/jwt/jsonwebtoken";
 import ExpressWebServer from "~services/webserver/express/http-server";
 
@@ -37,6 +38,13 @@ export default class DependencyInjection {
       useValue: Number(process.env.PASSWORD_SALT),
     });
     container.register("JWT_SECRET", { useValue: process.env.JWT_SECRET });
+    container.register("EMAIL_SERVICE", {
+      useValue: process.env.EMAIL_SERVICE,
+    });
+    container.register("EMAIL_SENDER", { useValue: process.env.EMAIL_SENDER });
+    container.register("EMAIL_PASSWORD", {
+      useValue: process.env.EMAIL_PASSWORD,
+    });
   }
 
   private static setupServices() {
@@ -45,6 +53,9 @@ export default class DependencyInjection {
     });
     container.register(JwtService, {
       useClass: JwtService,
+    });
+    container.register(EmailSender, {
+      useClass: EmailSender,
     });
   }
 
