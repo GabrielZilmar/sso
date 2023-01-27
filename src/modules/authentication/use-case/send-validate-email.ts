@@ -4,15 +4,23 @@ import AuthenticationUseCaseError, {
 } from "~modules/authentication/use-case/error";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
 import EmailSender from "~services/email-sender/nodemailer";
+import JwtService from "~services/jwt/jsonwebtoken";
 import { Http } from "~services/webserver/types";
 import { UseCase } from "~shared/core/use-case";
 import { Either, Left, Right } from "~shared/either";
 
 type SendValidateEmailParams = {
   email: string;
+  host: string;
 };
 
 type SendValidateEmailResponse = Either<AuthenticationUseCaseError, boolean>;
+
+type PrepareEmailHtmlParams = {
+  userName: string;
+  authEmailToken: string;
+  host: string;
+};
 
 @injectable()
 export default class SendValidateEmail
@@ -20,19 +28,25 @@ export default class SendValidateEmail
 {
   private readonly userRepository: UserRepository;
   private readonly emailSender: EmailSender;
+  private readonly jwtService: JwtService;
   private readonly subject: string;
   private readonly html: string;
 
-  constructor(userRepository: UserRepository, emailSender: EmailSender) {
+  constructor(
+    userRepository: UserRepository,
+    emailSender: EmailSender,
+    jwtService: JwtService
+  ) {
     this.userRepository = userRepository;
     this.emailSender = emailSender;
+    this.jwtService = jwtService;
     this.subject = "Authenticate email on SSO App";
     this.html = `
       <!DOCTYPE html>
       <html lang="en">
       <body>
         <h1>
-          Hi! {{Name}}
+          Hi! {{name}}
         </h1>
         <p>
           Click on this link to auth your email on SSO App: {{link}}
@@ -42,10 +56,23 @@ export default class SendValidateEmail
     `;
   }
 
+  private prepareEmailHtml({
+    userName,
+    authEmailToken,
+    host,
+  }: PrepareEmailHtmlParams): string {
+    const authEmailRoute = "api/user/auth-email";
+    const authEmailLink = `<a href="${host}/${authEmailRoute}/${authEmailToken}">Auth your email!</a>`;
+
+    return this.html
+      .replace("{{name}}", userName)
+      .replace("{{link}}", authEmailLink);
+  }
+
   async execute(
     params: SendValidateEmailParams
   ): Promise<SendValidateEmailResponse> {
-    const { email } = params;
+    const { email, host } = params;
 
     const user = await this.userRepository.findOneByCriteria({ email });
     if (!user) {
@@ -57,11 +84,23 @@ export default class SendValidateEmail
       );
     }
 
+    const authEmailToken = this.jwtService.signToken({
+      id: user.id.toString(),
+      email: user.email.value,
+      name: user.name.value,
+    });
+
+    const emailHtml = this.prepareEmailHtml({
+      userName: user.name.value,
+      authEmailToken,
+      host,
+    });
+
     try {
       await this.emailSender.send({
         to: email,
         subject: this.subject,
-        html: this.html,
+        html: emailHtml,
       });
     } catch (err) {
       return new Left(
