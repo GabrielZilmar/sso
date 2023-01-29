@@ -21,6 +21,8 @@ type PrepareEmailHtmlParams = {
   authEmailToken: string;
 };
 
+const TOKEN_DURATION = "10min";
+
 @injectable()
 export default class SendValidateEmail
   implements UseCase<SendValidateEmailParams, SendValidateEmailResponse>
@@ -82,11 +84,14 @@ export default class SendValidateEmail
       );
     }
 
-    const authEmailToken = this.jwtService.signToken({
-      id: user.id.toString(),
-      email: user.email.value,
-      name: user.name.value,
-    });
+    const authEmailToken = this.jwtService.signToken(
+      {
+        id: user.id.toString(),
+        email: user.email.value,
+        name: user.name.value,
+      },
+      TOKEN_DURATION
+    );
 
     const emailHtml = this.prepareEmailHtml({
       userName: user.name.value,
