@@ -31,9 +31,8 @@ export default EndpointBuilder.new("/api/authentication/user-email")
   .setHandler(async (req: SendEmailValidateRequest, res) => {
     const { token } = req.state;
     const { email } = req.body;
-    const { hostname } = req;
-    const port = DependencyInjection.resolve("PORT") as string;
 
+    // Todo: Create a pipe for it
     const canAccess = token.email === email || token.isAdmin;
     if (!canAccess) {
       res
@@ -45,7 +44,6 @@ export default EndpointBuilder.new("/api/authentication/user-email")
     const sendValidateEmail = DependencyInjection.resolve(SendValidateEmail);
     const sentEmailOrError = await sendValidateEmail.execute({
       email,
-      host: `http://${hostname}:${port}`,
     });
 
     if (sentEmailOrError.isLeft()) {

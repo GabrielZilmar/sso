@@ -7,11 +7,11 @@ import EmailSender from "~services/email-sender/nodemailer";
 import JwtService from "~services/jwt/jsonwebtoken";
 import { Http } from "~services/webserver/types";
 import { UseCase } from "~shared/core/use-case";
+import DependencyInjection from "~shared/dependency-injection";
 import { Either, Left, Right } from "~shared/either";
 
 type SendValidateEmailParams = {
   email: string;
-  host: string;
 };
 
 type SendValidateEmailResponse = Either<AuthenticationUseCaseError, boolean>;
@@ -19,7 +19,6 @@ type SendValidateEmailResponse = Either<AuthenticationUseCaseError, boolean>;
 type PrepareEmailHtmlParams = {
   userName: string;
   authEmailToken: string;
-  host: string;
 };
 
 @injectable()
@@ -59,10 +58,9 @@ export default class SendValidateEmail
   private prepareEmailHtml({
     userName,
     authEmailToken,
-    host,
   }: PrepareEmailHtmlParams): string {
-    const authEmailRoute = "api/user/auth-email";
-    const authEmailLink = `<a href="${host}/${authEmailRoute}/${authEmailToken}">Auth your email!</a>`;
+    const clientLink = DependencyInjection.resolve("CLIENT_LINK");
+    const authEmailLink = `<a href="${clientLink}/auth-email?token=${authEmailToken}">Auth your email!</a>`;
 
     return this.html
       .replace("{{name}}", userName)
@@ -72,7 +70,7 @@ export default class SendValidateEmail
   async execute(
     params: SendValidateEmailParams
   ): Promise<SendValidateEmailResponse> {
-    const { email, host } = params;
+    const { email } = params;
 
     const user = await this.userRepository.findOneByCriteria({ email });
     if (!user) {
@@ -93,7 +91,6 @@ export default class SendValidateEmail
     const emailHtml = this.prepareEmailHtml({
       userName: user.name.value,
       authEmailToken,
-      host,
     });
 
     try {
