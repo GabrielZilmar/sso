@@ -6,7 +6,7 @@ const isAdminPipe: IPipe = (req, res, next): void => {
   const { token } = req.state as {
     token: UserDTO;
   };
-  const isAdmin = { token };
+  const { isAdmin } = token;
 
   if (!isAdmin) {
     res.status(Http.Status.FORBIDDEN).send({
