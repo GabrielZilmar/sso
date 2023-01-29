@@ -45,6 +45,9 @@ export default class DependencyInjection {
     container.register("EMAIL_PASSWORD", {
       useValue: process.env.EMAIL_PASSWORD,
     });
+    container.register("CLIENT_LINK", {
+      useValue: process.env.CLIENT_LINK,
+    });
   }
 
   private static setupServices() {
