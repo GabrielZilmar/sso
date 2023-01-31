@@ -1,3 +1,4 @@
+import { validate } from "uuid";
 import AuthenticationDomainError, {
   AuthenticationDomainErrors,
 } from "~modules/authentication/domain/errors";
@@ -6,7 +7,6 @@ import AccessToken from "~modules/authentication/domain/value-objects/access-tok
 import { AggregateRoot } from "~shared/domain/aggregate-root";
 import { UniqueEntityID } from "~shared/domain/unique-entity-id";
 import { Either, Left, Right } from "~shared/either";
-import Validator from "~shared/validator";
 
 export interface AuthenticationDomainProps {
   accessToken: AccessToken;
@@ -28,7 +28,7 @@ export default class AuthenticationDomain extends AggregateRoot<AuthenticationDo
 
   private static isValid(props: AuthenticationDomainProps): boolean {
     const { accessToken, userId } = props;
-    const isValidUserId = Validator.isValidUuid(userId);
+    const isValidUserId = validate(userId);
 
     return !!accessToken && isValidUserId;
   }
