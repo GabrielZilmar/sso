@@ -6,9 +6,9 @@ import GetUser from "~modules/users/use-cases/get-user";
 import { Http } from "~services/webserver/types";
 import { UserHttpErrors } from "~modules/users/infra/http/errors";
 import requestValidation from "~services/webserver/express/pipes/request-validation.pipe";
-import Validator from "~shared/validator";
 import { UserDTO } from "~modules/users/dto/user-dto";
 import GetUserByName from "~modules/users/use-cases/get-user-by-name";
+import { validate } from "uuid";
 
 interface GetUserRequest extends Request {
   params: {
@@ -29,7 +29,7 @@ export default EndpointBuilder.new("/api/user/:idOrName")
     const { idOrName } = req.params;
     let user: UserDTO;
 
-    if (Validator.isValidUuid(idOrName)) {
+    if (validate(idOrName)) {
       const getUser = DependencyInjection.resolve(GetUser);
       user = await getUser.execute({ id: idOrName });
     } else {

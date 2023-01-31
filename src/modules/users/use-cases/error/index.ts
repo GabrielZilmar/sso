@@ -7,7 +7,8 @@ export const UserUseCaseErrors = {
     `Couldn't save user. Invalid user props: ${JSON.stringify(props)}.`,
   couldNotUpdateUser: "Something went wrong. Could not save the user.",
   couldNotCreateUser: "Something went wrong. Could not create the user.",
-  duplicatedItem: (username: string) =>
+  duplicatedUserEmail: (email: string) => `Email "${email}" is already taken`,
+  duplicatedUserName: (username: string) =>
     `Username "${username}" is already taken`,
 };
 

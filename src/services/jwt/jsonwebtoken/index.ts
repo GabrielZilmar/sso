@@ -32,7 +32,7 @@ export default class JwtService implements JwtContract<JwtPayload> {
     try {
       jwt.verify(token, this.jwtSecret);
     } catch (err) {
-      if ((err as Error).message.includes("TokenExpired")) {
+      if ((err as Error).message.includes("expired")) {
         return true;
       }
     }

@@ -152,7 +152,9 @@ export abstract class BaseRepository<T extends { id: string }, D>
     return itemsToDomain;
   }
 
-  async findOneByCriteria(criteria: FindOptionsWhere<T>): Promise<D | null> {
+  async findOneByCriteria(
+    criteria: FindOptionsWhere<T> | FindOptionsWhere<T>[]
+  ): Promise<D | null> {
     const item = await this.repository.findOneBy(criteria);
     if (!item) {
       return null;

@@ -6,6 +6,12 @@ import http from "http";
 import EndpointBuilder from "~services/webserver/express/utils/endpoint-builder";
 import { inject, injectable } from "tsyringe";
 
+declare module "express-serve-static-core" {
+  interface Request {
+    state: unknown;
+  }
+}
+
 @injectable()
 export default class ExpressWebServer implements WebServer {
   constructor(
