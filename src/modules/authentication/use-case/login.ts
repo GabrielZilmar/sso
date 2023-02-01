@@ -40,7 +40,7 @@ export default class LoginUseCase
     const { email, password } = params;
 
     const user = await this.userRepository.findOneByCriteria({ email });
-    if (!user) {
+    if (!user?.id) {
       return new Left(
         new AuthenticationUseCaseError(
           AuthenticationUseCaseErrors.userNotExits(email),

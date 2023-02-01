@@ -11,7 +11,7 @@ export interface UserDTO {
 }
 export class UserDtoTransformer {
   static toUserDTO(user: UserDomain): UserDTO {
-    const id = user.id.toString();
+    const id = user.id?.toString() || "";
     const name = user.name.value;
     const email = user.email.value;
     const isEmailVerified = user.isEmailVerified;

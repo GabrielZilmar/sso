@@ -11,6 +11,7 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "sourceMap": true,
+    "strictNullChecks": true,
     "baseUrl": "./",
     "paths": {
       "~modules/*": ["./src/modules/*"],

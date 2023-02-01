@@ -6,6 +6,11 @@ import DependencyInjection from "~shared/dependency-injection";
 const authenticationPipe: IPipe = (req, res, next): void => {
   const { authorization } = req.headers;
 
+  if (!authorization) {
+    res.status(Http.Status.UNAUTHORIZED).send({ message: "Missing token." });
+    return;
+  }
+
   const jwtToken = DependencyInjection.resolve(JwtService);
 
   const isTokenExpired = jwtToken.isTokenExpired(authorization);

@@ -13,7 +13,7 @@ export class Identifier<T> {
     return this.value;
   }
 
-  public equals(id?: Identifier<T>): boolean {
+  public equals(id?: Identifier<T> | null): boolean {
     if (!id || !(id instanceof this.constructor)) {
       return false;
     }

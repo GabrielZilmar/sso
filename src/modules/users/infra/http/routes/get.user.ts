@@ -27,7 +27,7 @@ export default EndpointBuilder.new("/api/user/:idOrName")
   )
   .setHandler(async (req: GetUserRequest, res) => {
     const { idOrName } = req.params;
-    let user: UserDTO;
+    let user: UserDTO | null;
 
     if (validate(idOrName)) {
       const getUser = DependencyInjection.resolve(GetUser);
