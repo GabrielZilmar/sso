@@ -36,10 +36,6 @@ export default class TokenMapper implements Mapper<TokenDomain, TokenEntity> {
       uniqueId
     );
     if (newToken.isLeft()) {
-      console.log(
-        "🚀 ~ file: token-mapper.ts:39 ~ TokenMapper ~ newToken",
-        newToken.value.message
-      );
       return new Left(newToken.value);
     }
 
