@@ -38,15 +38,15 @@ export class UserDomain extends AggregateRoot<UserProps> {
   }
 
   get isEmailVerified(): boolean {
-    return this.props.isEmailVerified;
+    return !!this.props.isEmailVerified;
   }
 
   get isAdmin(): boolean {
-    return this.props.isAdmin;
+    return !!this.props.isAdmin;
   }
 
   get deletedAt(): Date | null {
-    return this.props.deletedAt;
+    return this.props.deletedAt || null;
   }
 
   get isDeleted(): boolean {

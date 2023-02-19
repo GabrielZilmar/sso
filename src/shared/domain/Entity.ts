@@ -1,11 +1,11 @@
 import { UniqueEntityID } from "~shared/domain/unique-entity-id";
 
 export abstract class Entity<T> {
-  protected readonly _id: UniqueEntityID;
+  protected readonly _id: UniqueEntityID | null;
   public readonly props: T;
 
-  constructor(props: T, id?: UniqueEntityID) {
-    this._id = id;
+  constructor(props: T, id?: UniqueEntityID | null) {
+    this._id = id || null;
     this.props = props;
   }
 
@@ -26,6 +26,6 @@ export abstract class Entity<T> {
       return false;
     }
 
-    return this._id.equals(object._id);
+    return this._id?.equals(object._id) || false;
   }
 }

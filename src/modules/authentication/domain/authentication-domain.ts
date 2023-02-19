@@ -14,7 +14,10 @@ export interface AuthenticationDomainProps {
 }
 
 export default class AuthenticationDomain extends AggregateRoot<AuthenticationDomainProps> {
-  private constructor(props: AuthenticationDomainProps, id?: UniqueEntityID) {
+  private constructor(
+    props: AuthenticationDomainProps,
+    id?: UniqueEntityID | null
+  ) {
     super(props, id);
   }
 

@@ -10,8 +10,8 @@ import DependencyInjection from "~shared/dependency-injection";
 import { Either, Left, Right } from "~shared/either";
 
 export type PreventDuplicatedParams = {
-  name: string;
-  email: string;
+  name?: string;
+  email?: string;
 };
 
 export default class UserRepository extends BaseRepository<User, UserDomain> {

@@ -52,7 +52,7 @@ export default class UserMapper implements Mapper<UserDomain, UserEntity> {
   }
 
   public async toPersistence(user: UserDomain): Promise<UserEntity> {
-    let password: string = null;
+    let password: string | null = null;
     if (user.password) {
       if (user.password.isAlreadyHashed()) {
         password = user.password.value;

@@ -7,7 +7,7 @@ import { UniqueEntityID } from "~shared/domain/unique-entity-id";
 export abstract class AggregateRoot<T> extends Entity<T> {
   private _domainEvents = domainEvent;
 
-  get id(): UniqueEntityID {
+  get id(): UniqueEntityID | null {
     return this._id;
   }
 

@@ -13,7 +13,7 @@ import { Either, Left, Right } from "~shared/either";
 type UpdateUserParams = {
   id: string;
   user: {
-    name?: string;
+    name: string;
   };
 };
 
