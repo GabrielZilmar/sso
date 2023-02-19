@@ -1,7 +1,7 @@
 import TokenDomainError, {
   TokenDomainErrors,
 } from "~modules/token/domain/errors";
-import { TokenTypes, TOKEN_TYPES_ENUM } from "~modules/token/Entity/Token";
+import { TokenTypes, TOKEN_TYPES_ENUM } from "~modules/token/entity/Token";
 import { ValueObject } from "~shared/domain/value-object";
 import { Either, Left, Right } from "~shared/either";
 
