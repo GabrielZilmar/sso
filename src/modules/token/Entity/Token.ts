@@ -3,7 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -17,7 +17,7 @@ export class Token {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   @JoinColumn()
   user: User;
 
@@ -25,13 +25,13 @@ export class Token {
   userId: string;
 
   @Column({ enum: TOKEN_TYPES_ENUM })
-  type: string;
+  type: TokenTypes;
 
-  @Column({ unique: true })
+  @Column()
   token: string;
 
   @Column({ type: "timestamptz" })
-  expiry: number;
+  expiry: Date;
 
   @Column({ type: "timestamptz", nullable: true })
   usedAt: Date | null;
