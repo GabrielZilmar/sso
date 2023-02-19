@@ -3,13 +3,13 @@ import AuthenticationDomainError, {
   AuthenticationDomainErrors,
 } from "~modules/authentication/domain/errors";
 import { AuthenticationCreatedEventPayload } from "~modules/authentication/domain/events-listeners/auth-created";
-import AccessToken from "~modules/authentication/domain/value-objects/access-token";
+import Token from "~modules/token/domain/value-objects/token";
 import { AggregateRoot } from "~shared/domain/aggregate-root";
 import { UniqueEntityID } from "~shared/domain/unique-entity-id";
 import { Either, Left, Right } from "~shared/either";
 
 export interface AuthenticationDomainProps {
-  accessToken: AccessToken;
+  accessToken: Token;
   userId: string;
 }
 
@@ -21,7 +21,7 @@ export default class AuthenticationDomain extends AggregateRoot<AuthenticationDo
     super(props, id);
   }
 
-  get accessToken(): AccessToken {
+  get accessToken(): Token {
     return this.props.accessToken;
   }
 

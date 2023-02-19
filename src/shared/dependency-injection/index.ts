@@ -2,6 +2,7 @@ import { container, InjectionToken } from "tsyringe";
 import AuthenticationCreated from "~modules/authentication/domain/events-listeners/auth-created";
 import LoginUseCase from "~modules/authentication/use-case/login";
 import SendValidateEmail from "~modules/authentication/use-case/send-validate-email";
+import TokenMapper from "~modules/token/mappers/token-mapper";
 import UserCreated from "~modules/users/domain/events-listeners/user-created";
 import UserDeleted from "~modules/users/domain/events-listeners/user-deleted";
 import UserMapper from "~modules/users/mappers/user-mapper";
@@ -12,6 +13,7 @@ import GetUser from "~modules/users/use-cases/get-user";
 import GetUserByName from "~modules/users/use-cases/get-user-by-name";
 import GetUsers from "~modules/users/use-cases/get-users";
 import UpdateUser from "~modules/users/use-cases/update-user";
+import TokenRepository from "~services/database/typeorm/repositories/token-repository";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
 import EmailSender from "~services/email-sender/nodemailer";
 import JwtService from "~services/jwt/jsonwebtoken";
@@ -50,6 +52,15 @@ export default class DependencyInjection {
     container.register("CLIENT_LINK", {
       useValue: process.env.CLIENT_LINK,
     });
+    container.register("ALGORITHM", {
+      useValue: process.env.ALGORITHM,
+    });
+    container.register("ALGORITHM_SECURITY_KEY", {
+      useValue: process.env.ALGORITHM_SECURITY_KEY,
+    });
+    container.register("ALGORITHM_IV", {
+      useValue: process.env.ALGORITHM_IV,
+    });
   }
 
   private static setupServices() {
@@ -80,11 +91,17 @@ export default class DependencyInjection {
     container.register(UserRepository, {
       useClass: UserRepository,
     });
+    container.register(TokenRepository, {
+      useClass: TokenRepository,
+    });
   }
 
   public static setupMappers() {
     container.register(UserMapper, {
       useClass: UserMapper,
+    });
+    container.register(TokenMapper, {
+      useClass: TokenMapper,
     });
   }
 

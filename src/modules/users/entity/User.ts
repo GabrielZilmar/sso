@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 
-@Entity()
+@Entity("users")
 export class User {
   @PrimaryGeneratedColumn("uuid")
   id: string;
@@ -26,7 +26,7 @@ export class User {
   @Column({ default: false })
   isAdmin: boolean;
 
-  @Column({ nullable: true })
+  @Column({ type: "timestamptz", nullable: true })
   deletedAt: Date | null;
 
   @CreateDateColumn()

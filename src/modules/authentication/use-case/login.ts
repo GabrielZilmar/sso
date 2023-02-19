@@ -7,7 +7,7 @@ import {
 import AuthenticationUseCaseError, {
   AuthenticationUseCaseErrors,
 } from "~modules/authentication/use-case/error";
-import AccessToken from "~modules/authentication/domain/value-objects/access-token";
+import AccessToken from "~modules/token/domain/value-objects/token";
 import { UserDtoTransformer } from "~modules/users/dto/user-dto";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
 import { Http } from "~services/webserver/types";

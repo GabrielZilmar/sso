@@ -25,11 +25,21 @@ export default class DomainEvents {
     return events;
   }
 
+  private getTokenEvents() {
+    const events = ["token.created", "token.used"];
+
+    return events;
+  }
+
   private initialize() {
     const userEvents = this.getUserEvents();
     const authenticationEvents = this.getAuthenticationEvents();
-    const allEvents = userEvents.concat(authenticationEvents);
+    const tokenEvents = this.getTokenEvents();
+    const allEvents = userEvents
+      .concat(authenticationEvents)
+      .concat(tokenEvents);
 
     this.eventEmitter = new EventEmitter(allEvents);
+    Object.freeze(this);
   }
 }
