@@ -31,5 +31,6 @@ export default class DomainEvents {
     const allEvents = userEvents.concat(authenticationEvents);
 
     this.eventEmitter = new EventEmitter(allEvents);
+    Object.freeze(this);
   }
 }
