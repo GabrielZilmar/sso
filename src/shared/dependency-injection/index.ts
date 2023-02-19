@@ -2,6 +2,7 @@ import { container, InjectionToken } from "tsyringe";
 import AuthenticationCreated from "~modules/authentication/domain/events-listeners/auth-created";
 import LoginUseCase from "~modules/authentication/use-case/login";
 import SendValidateEmail from "~modules/authentication/use-case/send-validate-email";
+import TokenMapper from "~modules/token/mappers/token-mapper";
 import UserCreated from "~modules/users/domain/events-listeners/user-created";
 import UserDeleted from "~modules/users/domain/events-listeners/user-deleted";
 import UserMapper from "~modules/users/mappers/user-mapper";
@@ -85,6 +86,9 @@ export default class DependencyInjection {
   public static setupMappers() {
     container.register(UserMapper, {
       useClass: UserMapper,
+    });
+    container.register(TokenMapper, {
+      useClass: TokenMapper,
     });
   }
 
