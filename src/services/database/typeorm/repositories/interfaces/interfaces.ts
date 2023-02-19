@@ -1,4 +1,9 @@
-import { DeepPartial, FindOptionsWhere } from "typeorm";
+import {
+  DeepPartial,
+  FindManyOptions,
+  FindOneOptions,
+  FindOptionsWhere,
+} from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import RepositoryError from "~services/database/typeorm/repositories/error";
 import { Either } from "~shared/either";
@@ -14,7 +19,8 @@ export interface IWrite<T, D> {
 }
 
 export interface IRead<T, D> {
-  find(criteria: FindOptionsWhere<T> | FindOptionsWhere<T>[]): Promise<D[]>;
+  find(options?: FindManyOptions<T>): Promise<D[]>;
+  findOne(options: FindOneOptions<T>): Promise<D | null>;
   findAll(): Promise<{ items: D[]; count: number }>;
   findOneByCriteria(
     criteria: FindOptionsWhere<T> | FindOptionsWhere<T>[]
