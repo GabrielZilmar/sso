@@ -28,23 +28,23 @@ export default class TokenDomain extends AggregateRoot<TokenDomainProps> {
   }
 
   get userId(): string {
-    return this.userId;
+    return this.props.userId;
   }
 
   get type(): TokenType {
-    return this.type;
+    return this.props.type;
   }
 
   get token(): Token {
-    return this.token;
+    return this.props.token;
   }
 
   get expiry(): Date {
-    return this.expiry;
+    return this.props.expiry;
   }
 
   get usedAt(): Date | null {
-    return this.usedAt;
+    return this.props.usedAt || null;
   }
 
   private static isValid(props: TokenDomainProps): boolean {
