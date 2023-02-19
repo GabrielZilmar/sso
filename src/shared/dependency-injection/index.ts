@@ -52,6 +52,15 @@ export default class DependencyInjection {
     container.register("CLIENT_LINK", {
       useValue: process.env.CLIENT_LINK,
     });
+    container.register("ALGORITHM", {
+      useValue: process.env.ALGORITHM,
+    });
+    container.register("ALGORITHM_SECURITY_KEY", {
+      useValue: process.env.ALGORITHM_SECURITY_KEY,
+    });
+    container.register("ALGORITHM_IV", {
+      useValue: process.env.ALGORITHM_IV,
+    });
   }
 
   private static setupServices() {

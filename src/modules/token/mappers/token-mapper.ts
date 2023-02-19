@@ -42,16 +42,21 @@ export default class TokenMapper implements Mapper<TokenDomain, TokenEntity> {
     return new Right(newToken.value);
   }
 
-  public async toPersistence(token: TokenDomain): Promise<TokenEntity> {
-    // TODO: Crypt token
+  public async toPersistence(domain: TokenDomain): Promise<TokenEntity> {
+    let token: string | null = null;
+    if (domain.token.isEncrypted) {
+      token = domain.token.value;
+    } else {
+      token = domain.token.getEncryptValue();
+    }
 
     const newToken = {
-      id: token.id?.toValue(),
-      userId: token.userId,
-      type: token.token.value,
-      token: token.token.value,
-      expiry: token.expiry.getTime(),
-      usedAt: token.usedAt || null,
+      id: domain.id?.toValue(),
+      userId: domain.userId,
+      type: domain.token.value,
+      token,
+      expiry: domain.expiry.getTime(),
+      usedAt: domain.usedAt || null,
     } as TokenEntity;
 
     return newToken;
