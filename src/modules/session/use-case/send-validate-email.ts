@@ -1,7 +1,7 @@
 import { injectable } from "tsyringe";
-import AuthenticationUseCaseError, {
-  AuthenticationUseCaseErrors,
-} from "~modules/authentication/use-case/error";
+import SessionUseCaseError, {
+  SessionUseCaseErrors,
+} from "~modules/session/use-case/error";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
 import EmailSender from "~services/email-sender/nodemailer";
 import JwtService from "~services/jwt/jsonwebtoken";
@@ -14,7 +14,7 @@ type SendValidateEmailParams = {
   email: string;
 };
 
-type SendValidateEmailResponse = Either<AuthenticationUseCaseError, boolean>;
+type SendValidateEmailResponse = Either<SessionUseCaseError, boolean>;
 
 type PrepareEmailHtmlParams = {
   userName: string;
@@ -77,8 +77,8 @@ export default class SendValidateEmail
     const user = await this.userRepository.findOneByCriteria({ email });
     if (!user?.id) {
       return new Left(
-        new AuthenticationUseCaseError(
-          AuthenticationUseCaseErrors.userNotExits(email),
+        new SessionUseCaseError(
+          SessionUseCaseErrors.userNotExits(email),
           Http.Status.BAD_REQUEST
         )
       );
@@ -106,7 +106,7 @@ export default class SendValidateEmail
       });
     } catch (err) {
       return new Left(
-        new AuthenticationUseCaseError(
+        new SessionUseCaseError(
           (err as Error).message,
           Http.Status.INTERNAL_SERVER_ERROR
         )

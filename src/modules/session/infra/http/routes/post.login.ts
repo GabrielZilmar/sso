@@ -1,6 +1,6 @@
 import { Request } from "express";
 import Joi from "joi";
-import LoginUseCase from "~modules/authentication/use-case/login";
+import LoginUseCase from "~modules/session/use-case/login";
 import requestValidation from "~services/webserver/express/pipes/request-validation.pipe";
 import EndpointBuilder from "~services/webserver/express/utils/endpoint-builder";
 import { Http } from "~services/webserver/types";

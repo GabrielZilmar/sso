@@ -1,7 +1,7 @@
 import { container, InjectionToken } from "tsyringe";
-import AuthenticationCreated from "~modules/authentication/domain/events-listeners/auth-created";
-import LoginUseCase from "~modules/authentication/use-case/login";
-import SendValidateEmail from "~modules/authentication/use-case/send-validate-email";
+import SessionCreated from "~modules/session/domain/events-listeners/auth-created";
+import LoginUseCase from "~modules/session/use-case/login";
+import SendValidateEmail from "~modules/session/use-case/send-validate-email";
 import TokenMapper from "~modules/token/mappers/token-mapper";
 import UserCreated from "~modules/users/domain/events-listeners/user-created";
 import UserDeleted from "~modules/users/domain/events-listeners/user-deleted";
@@ -82,8 +82,8 @@ export default class DependencyInjection {
     container.register(UserDeleted, {
       useClass: UserDeleted,
     });
-    container.register(AuthenticationCreated, {
-      useClass: AuthenticationCreated,
+    container.register(SessionCreated, {
+      useClass: SessionCreated,
     });
   }
 
@@ -132,7 +132,7 @@ export default class DependencyInjection {
       useClass: AuthEmail,
     });
 
-    // Authentication UseCases
+    // Session UseCases
     container.register(LoginUseCase, {
       useClass: LoginUseCase,
     });
