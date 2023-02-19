@@ -19,8 +19,8 @@ export default class DomainEvents {
     return events;
   }
 
-  private getAuthenticationEvents() {
-    const events = ["authentication.created"];
+  private getSessionEvents() {
+    const events = ["session.created"];
 
     return events;
   }
@@ -33,11 +33,9 @@ export default class DomainEvents {
 
   private initialize() {
     const userEvents = this.getUserEvents();
-    const authenticationEvents = this.getAuthenticationEvents();
+    const sessionEvents = this.getSessionEvents();
     const tokenEvents = this.getTokenEvents();
-    const allEvents = userEvents
-      .concat(authenticationEvents)
-      .concat(tokenEvents);
+    const allEvents = userEvents.concat(sessionEvents).concat(tokenEvents);
 
     this.eventEmitter = new EventEmitter(allEvents);
     Object.freeze(this);

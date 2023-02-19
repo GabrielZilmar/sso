@@ -1,6 +1,6 @@
 import { Request } from "express";
 import Joi from "joi";
-import SendValidateEmail from "~modules/authentication/use-case/send-validate-email";
+import SendValidateEmail from "~modules/session/use-case/send-validate-email";
 import { UserDTO } from "~modules/users/dto/user-dto";
 import authenticationPipe from "~services/webserver/express/pipes/authentication.pipe";
 import authorizationPipe from "~services/webserver/express/pipes/authorization.pipe";

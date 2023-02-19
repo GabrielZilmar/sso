@@ -1,12 +1,12 @@
 import { injectable } from "tsyringe";
-import AuthenticationDomain from "~modules/authentication/domain/authentication-domain";
+import SessionDomain from "~modules/session/domain/session-domain";
 import {
-  AuthenticationDTOTransformer,
-  AuthenticationDTO,
-} from "~modules/authentication/dto/session-dto";
-import AuthenticationUseCaseError, {
-  AuthenticationUseCaseErrors,
-} from "~modules/authentication/use-case/error";
+  SessionDTOTransformer,
+  SessionDTO,
+} from "~modules/session/dto/session-dto";
+import SessionUseCaseError, {
+  SessionUseCaseErrors,
+} from "~modules/session/use-case/error";
 import AccessToken from "~modules/token/domain/value-objects/token";
 import { UserDtoTransformer } from "~modules/users/dto/user-dto";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
@@ -19,10 +19,7 @@ type LoginUseCaseParams = {
   password: string;
 };
 
-type LoginUseCaseResponse = Either<
-  AuthenticationUseCaseError,
-  AuthenticationDTO
->;
+type LoginUseCaseResponse = Either<SessionUseCaseError, SessionDTO>;
 
 @injectable()
 export default class LoginUseCase
@@ -42,8 +39,8 @@ export default class LoginUseCase
     const user = await this.userRepository.findOneByCriteria({ email });
     if (!user?.id) {
       return new Left(
-        new AuthenticationUseCaseError(
-          AuthenticationUseCaseErrors.userNotExits(email),
+        new SessionUseCaseError(
+          SessionUseCaseErrors.userNotExits(email),
           Http.Status.NOT_FOUND
         )
       );
@@ -52,8 +49,8 @@ export default class LoginUseCase
     const passwordMatch = await user.password.comparePassword(password);
     if (!passwordMatch) {
       return new Left(
-        new AuthenticationUseCaseError(
-          AuthenticationUseCaseErrors.invalidPassword,
+        new SessionUseCaseError(
+          SessionUseCaseErrors.invalidPassword,
           Http.Status.UNAUTHORIZED
         )
       );
@@ -63,30 +60,30 @@ export default class LoginUseCase
     const accessToken = AccessToken.create(userDto);
     if (accessToken.isLeft()) {
       return new Left(
-        new AuthenticationUseCaseError(
+        new SessionUseCaseError(
           accessToken.value.message,
           Http.Status.INTERNAL_SERVER_ERROR
         )
       );
     }
 
-    const authentication = await AuthenticationDomain.create({
+    const session = await SessionDomain.create({
       accessToken: accessToken.value,
       userId: user.id.toValue(),
     });
-    if (authentication.isLeft()) {
+    if (session.isLeft()) {
       return new Left(
-        new AuthenticationUseCaseError(
-          authentication.value.message,
+        new SessionUseCaseError(
+          session.value.message,
           Http.Status.INTERNAL_SERVER_ERROR
         )
       );
     }
 
-    const authenticationDto = AuthenticationDTOTransformer.toDTO({
+    const sessionDto = SessionDTOTransformer.toDTO({
       user: userDto,
-      authentication: authentication.value,
+      session: session.value,
     });
-    return new Right(authenticationDto);
+    return new Right(sessionDto);
   }
 }

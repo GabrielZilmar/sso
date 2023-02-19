@@ -1,7 +1,7 @@
 import { Entity } from "~shared/domain/entity";
 import { UniqueEntityID } from "~shared/domain/unique-entity-id";
 
-export default class AuthenticationId extends Entity<unknown> {
+export default class SessionId extends Entity<unknown> {
   get id(): UniqueEntityID | null {
     return this._id;
   }
@@ -10,7 +10,7 @@ export default class AuthenticationId extends Entity<unknown> {
     super(null, id);
   }
 
-  public static create(id?: UniqueEntityID): AuthenticationId {
-    return new AuthenticationId(id);
+  public static create(id?: UniqueEntityID): SessionId {
+    return new SessionId(id);
   }
 }

@@ -1,7 +1,7 @@
 import { injectable } from "tsyringe";
-import AuthenticationUseCaseError, {
-  AuthenticationUseCaseErrors,
-} from "~modules/authentication/use-case/error";
+import SessionUseCaseError, {
+  SessionUseCaseErrors,
+} from "~modules/session/use-case/error";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
 import EmailSender from "~services/email-sender/nodemailer";
 import JwtService from "~services/jwt/jsonwebtoken";
@@ -14,10 +14,7 @@ type SendRecoverPasswordEmailParams = {
   password: string;
 };
 
-type SendRecoverPasswordEmailResponse = Either<
-  AuthenticationUseCaseError,
-  boolean
->;
+type SendRecoverPasswordEmailResponse = Either<SessionUseCaseError, boolean>;
 
 @injectable()
 export default class SendRecoverPasswordEmail
@@ -46,8 +43,8 @@ export default class SendRecoverPasswordEmail
     const user = await this.userRepository.findOneById(userId);
     if (!user) {
       return new Left(
-        new AuthenticationUseCaseError(
-          AuthenticationUseCaseErrors.userIdNotFound(userId),
+        new SessionUseCaseError(
+          SessionUseCaseErrors.userIdNotFound(userId),
           Http.Status.BAD_REQUEST
         )
       );
@@ -56,15 +53,15 @@ export default class SendRecoverPasswordEmail
     const isPasswordCorrect = await user.password.comparePassword(password);
     if (!isPasswordCorrect) {
       return new Left(
-        new AuthenticationUseCaseError(
-          AuthenticationUseCaseErrors.invalidPassword,
+        new SessionUseCaseError(
+          SessionUseCaseErrors.invalidPassword,
           Http.Status.BAD_REQUEST
         )
       );
     }
 
-    // Create recover password token
-    // Send recover password email
+    // TODO: Create recover password token
+    // TODO: Send recover password email
 
     return new Right(true);
   }
