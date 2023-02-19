@@ -1,6 +1,7 @@
 import { container, InjectionToken } from "tsyringe";
 import SessionCreated from "~modules/session/domain/events-listeners/auth-created";
 import LoginUseCase from "~modules/session/use-case/login";
+import SendRecoverPasswordEmail from "~modules/session/use-case/send-recover-password-email";
 import SendValidateEmail from "~modules/session/use-case/send-validate-email";
 import TokenCreated from "~modules/token/domain/events-listeners/token-created";
 import TokenUsed from "~modules/token/domain/events-listeners/token-used";
@@ -149,6 +150,9 @@ export default class DependencyInjection {
     });
     container.register(SendValidateEmail, {
       useClass: SendValidateEmail,
+    });
+    container.register(SendRecoverPasswordEmail, {
+      useClass: SendRecoverPasswordEmail,
     });
   }
 }
