@@ -13,6 +13,7 @@ import GetUser from "~modules/users/use-cases/get-user";
 import GetUserByName from "~modules/users/use-cases/get-user-by-name";
 import GetUsers from "~modules/users/use-cases/get-users";
 import UpdateUser from "~modules/users/use-cases/update-user";
+import TokenRepository from "~services/database/typeorm/repositories/token-repository";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
 import EmailSender from "~services/email-sender/nodemailer";
 import JwtService from "~services/jwt/jsonwebtoken";
@@ -80,6 +81,9 @@ export default class DependencyInjection {
   private static setupRepositories() {
     container.register(UserRepository, {
       useClass: UserRepository,
+    });
+    container.register(TokenRepository, {
+      useClass: TokenRepository,
     });
   }
 
