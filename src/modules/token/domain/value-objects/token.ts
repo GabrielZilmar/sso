@@ -1,18 +1,18 @@
-import AuthenticationDomainError, {
-  AuthenticationDomainErrors,
-} from "~modules/authentication/domain/errors";
+import TokenDomainError, {
+  TokenDomainErrors,
+} from "~modules/token/domain/errors";
 import JwtService from "~services/jwt/jsonwebtoken";
 import DependencyInjection from "~shared/dependency-injection";
 import { ValueObject } from "~shared/domain/value-object";
 import { Either, Left, Right } from "~shared/either";
 
-export interface AccessTokenProps {
+export interface TokenProps {
   value: string;
   isAuth?: boolean;
 }
 
-export default class AccessToken extends ValueObject<AccessTokenProps> {
-  private constructor(props: AccessTokenProps) {
+export default class Token extends ValueObject<TokenProps> {
+  private constructor(props: TokenProps) {
     super(props);
   }
 
@@ -42,15 +42,9 @@ export default class AccessToken extends ValueObject<AccessTokenProps> {
     return isValidObject;
   }
 
-  public static create<T>(
-    props: T
-  ): Either<AuthenticationDomainError, AccessToken> {
+  public static create<T>(props: T): Either<TokenDomainError, Token> {
     if (!this.isValid<T>(props)) {
-      return new Left(
-        new AuthenticationDomainError(
-          AuthenticationDomainErrors.invalidAuthenticationAccessToken
-        )
-      );
+      return new Left(new TokenDomainError(TokenDomainErrors.invalidToken));
     }
 
     const jwt = DependencyInjection.resolve(JwtService);
@@ -58,6 +52,6 @@ export default class AccessToken extends ValueObject<AccessTokenProps> {
     const token = jwt.signToken(props);
     const isAuth = !jwt.isTokenExpired(token);
 
-    return new Right(new AccessToken({ value: token, isAuth }));
+    return new Right(new Token({ value: token, isAuth }));
   }
 }
