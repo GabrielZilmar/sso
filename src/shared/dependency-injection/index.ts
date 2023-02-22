@@ -15,6 +15,7 @@ import DeleteUser from "~modules/users/use-cases/delete-user";
 import GetUser from "~modules/users/use-cases/get-user";
 import GetUserByName from "~modules/users/use-cases/get-user-by-name";
 import GetUsers from "~modules/users/use-cases/get-users";
+import UpdatePassword from "~modules/users/use-cases/update-password";
 import UpdateUser from "~modules/users/use-cases/update-user";
 import Crypto from "~services/cryptography/crypto";
 import TokenRepository from "~services/database/typeorm/repositories/token-repository";
@@ -146,6 +147,9 @@ export default class DependencyInjection {
     });
     container.register(AuthEmail, {
       useClass: AuthEmail,
+    });
+    container.register(UpdatePassword, {
+      useClass: UpdatePassword,
     });
 
     // Session UseCases
