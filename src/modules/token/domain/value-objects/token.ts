@@ -1,7 +1,7 @@
-import crypto from "crypto";
 import TokenDomainError, {
   TokenDomainErrors,
 } from "~modules/token/domain/errors";
+import Crypto from "~services/cryptography/crypto";
 import JwtService from "~services/jwt/jsonwebtoken";
 import DependencyInjection from "~shared/dependency-injection";
 import { ValueObject } from "~shared/domain/value-object";
@@ -61,16 +61,9 @@ export default class Token extends ValueObject<TokenProps> {
       return this.props.value;
     }
 
-    const algorithm = DependencyInjection.resolve("ALGORITHM") as string;
-    const securityKey = DependencyInjection.resolve(
-      "ALGORITHM_SECURITY_KEY"
-    ) as string;
-    const initVector = DependencyInjection.resolve("ALGORITHM_IV") as string;
+    const crypto = DependencyInjection.resolve(Crypto);
 
-    const cipher = crypto.createCipheriv(algorithm, securityKey, initVector);
-
-    let encryptedData = cipher.update(this.props.value, "utf-8", "base64");
-    encryptedData += cipher.final("base64");
+    const encryptedData = crypto.encryptValue(this.props.value);
     this.props.value = encryptedData;
     this.props.isEncrypted = true;
 
@@ -78,22 +71,9 @@ export default class Token extends ValueObject<TokenProps> {
   }
 
   private static decryptValue(value: string): string {
-    const algorithm = DependencyInjection.resolve("ALGORITHM") as string;
-    const securityKey = DependencyInjection.resolve(
-      "ALGORITHM_SECURITY_KEY"
-    ) as string;
-    const initVector = DependencyInjection.resolve("ALGORITHM_IV") as string;
+    const crypto = DependencyInjection.resolve(Crypto);
 
-    const decipher = crypto.createDecipheriv(
-      algorithm,
-      securityKey,
-      initVector
-    );
-
-    let decryptedData = decipher.update(value, "base64", "utf-8");
-    decryptedData += decipher.final("utf8");
-
-    return decryptedData;
+    return crypto.decryptValue(value);
   }
 
   public getDecryptValue(): string {
