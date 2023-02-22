@@ -14,6 +14,11 @@ export type PreventRecreateTokenParams = {
   type?: TokenTypes;
 };
 
+export type UseTokenParams = {
+  userId: string;
+  token: string;
+};
+
 export default class TokenRepository extends BaseRepository<
   Token,
   TokenDomain
@@ -74,6 +79,19 @@ export default class TokenRepository extends BaseRepository<
           (err as Error).message
         )
       );
+    }
+  }
+
+  async useToken({
+    userId,
+    token,
+  }: UseTokenParams): Promise<Either<RepositoryError, boolean>> {
+    try {
+      await this.repository.update({ userId, token }, { usedAt: new Date() });
+
+      return new Right(true);
+    } catch (err) {
+      return new Left(new RepositoryError((err as Error).message));
     }
   }
 }
