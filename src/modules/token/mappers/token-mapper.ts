@@ -2,7 +2,7 @@ import TokenDomainError from "~modules/token/domain/errors";
 import TokenDomain from "~modules/token/domain/token-domain";
 import Token from "~modules/token/domain/value-objects/token";
 import TokenType from "~modules/token/domain/value-objects/type";
-import { Token as TokenEntity, TokenTypes } from "~modules/token/Entity/Token";
+import { Token as TokenEntity, TokenTypes } from "~modules/token/entity/Token";
 import { Mapper } from "~shared/domain/mapper";
 import { UniqueEntityID } from "~shared/domain/unique-entity-id";
 import { Either, Left, Right } from "~shared/either";
@@ -20,7 +20,7 @@ export default class TokenMapper implements Mapper<TokenDomain, TokenEntity> {
       return new Left(typeOrError.value);
     }
 
-    const tokenOrError = Token.create(token);
+    const tokenOrError = Token.create(token, { isEncrypted: true });
     if (tokenOrError.isLeft()) {
       return new Left(tokenOrError.value);
     }
@@ -53,9 +53,9 @@ export default class TokenMapper implements Mapper<TokenDomain, TokenEntity> {
     const newToken = {
       id: domain.id?.toValue(),
       userId: domain.userId,
-      type: domain.token.value,
+      type: domain.type.value,
       token,
-      expiry: domain.expiry.getTime(),
+      expiry: domain.expiry,
       usedAt: domain.usedAt || null,
     } as TokenEntity;
 

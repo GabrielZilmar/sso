@@ -1,5 +1,5 @@
 import { TriggersOn } from "@gabrielzilmar/event-emitter";
-import { TokenTypes } from "~modules/token/Entity/Token";
+import { TokenTypes } from "~modules/token/entity/Token";
 import { domainEvent } from "~shared/domain/events";
 
 export type TokenUsedEventPayload = {

@@ -1,6 +1,7 @@
 import { container, InjectionToken } from "tsyringe";
 import SessionCreated from "~modules/session/domain/events-listeners/auth-created";
 import LoginUseCase from "~modules/session/use-case/login";
+import SendRecoverPasswordEmail from "~modules/session/use-case/send-recover-password-email";
 import SendValidateEmail from "~modules/session/use-case/send-validate-email";
 import TokenCreated from "~modules/token/domain/events-listeners/token-created";
 import TokenUsed from "~modules/token/domain/events-listeners/token-used";
@@ -14,7 +15,9 @@ import DeleteUser from "~modules/users/use-cases/delete-user";
 import GetUser from "~modules/users/use-cases/get-user";
 import GetUserByName from "~modules/users/use-cases/get-user-by-name";
 import GetUsers from "~modules/users/use-cases/get-users";
+import UpdatePassword from "~modules/users/use-cases/update-password";
 import UpdateUser from "~modules/users/use-cases/update-user";
+import Crypto from "~services/cryptography/crypto";
 import TokenRepository from "~services/database/typeorm/repositories/token-repository";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
 import EmailSender from "~services/email-sender/nodemailer";
@@ -74,6 +77,9 @@ export default class DependencyInjection {
     });
     container.register(EmailSender, {
       useClass: EmailSender,
+    });
+    container.register(Crypto, {
+      useClass: Crypto,
     });
   }
 
@@ -142,6 +148,9 @@ export default class DependencyInjection {
     container.register(AuthEmail, {
       useClass: AuthEmail,
     });
+    container.register(UpdatePassword, {
+      useClass: UpdatePassword,
+    });
 
     // Session UseCases
     container.register(LoginUseCase, {
@@ -149,6 +158,9 @@ export default class DependencyInjection {
     });
     container.register(SendValidateEmail, {
       useClass: SendValidateEmail,
+    });
+    container.register(SendRecoverPasswordEmail, {
+      useClass: SendRecoverPasswordEmail,
     });
   }
 }

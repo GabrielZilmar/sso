@@ -1,6 +1,8 @@
 import {
   DeepPartial,
   EntityTarget,
+  FindManyOptions,
+  FindOneOptions,
   FindOptionsWhere,
   Repository,
 } from "typeorm";
@@ -137,8 +139,18 @@ export abstract class BaseRepository<T extends { id: string }, D>
     return { items: itemsToDomain, count };
   }
 
-  async find(criteria: FindOptionsWhere<T>): Promise<D[]> {
-    const items = await this.repository.findBy(criteria);
+  async findOne(options: FindOneOptions<T>): Promise<D | null> {
+    const item = await this.repository.findOne(options);
+    if (!item) {
+      return null;
+    }
+
+    const itemToDomain = await this.mapper.toDomain(item);
+    return itemToDomain.isRight() ? itemToDomain.value : null;
+  }
+
+  async find(options?: FindManyOptions<T>): Promise<D[]> {
+    const items = await this.repository.find(options);
 
     const itemsToDomain: D[] = [];
     for await (const item of items) {
