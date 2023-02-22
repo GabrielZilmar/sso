@@ -32,10 +32,12 @@ export default EndpointBuilder.new("/api/user/auth-email")
   ])
   .setHandler(async (req: SendEmailValidateRequest, res) => {
     const { id } = req.body;
+    const { authorization: token } = req.headers;
 
     const authEmail = DependencyInjection.resolve(AuthEmail);
     const authEmailOrError = await authEmail.execute({
       id,
+      decryptedToken: token as string,
     });
 
     if (authEmailOrError.isLeft()) {

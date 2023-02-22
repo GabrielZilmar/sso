@@ -12,7 +12,7 @@ import { Either, Left, Right } from "~shared/either";
 
 type UpdatePasswordParams = {
   id: string;
-  deCryptedToken: string;
+  decryptedToken: string;
   currentPassword: string;
   newPassword: string;
 };
@@ -40,7 +40,7 @@ export default class UpdatePassword
   public async execute(
     params: UpdatePasswordParams
   ): Promise<UpdatePasswordResponse> {
-    const { id, deCryptedToken, currentPassword, newPassword } = params;
+    const { id, decryptedToken, currentPassword, newPassword } = params;
 
     const user = await this.userRepository.findOneById(id);
     if (!user) {
@@ -86,10 +86,10 @@ export default class UpdatePassword
       );
     }
 
-    const tokenDecrypted = this.crypto.encryptValue(deCryptedToken);
+    const tokenEncrypted = this.crypto.encryptValue(decryptedToken);
     const tokenUpdatedOrError = await this.tokenRepository.useToken({
       userId: id,
-      token: tokenDecrypted,
+      token: tokenEncrypted,
     });
     if (tokenUpdatedOrError.isLeft()) {
       return new Left(
