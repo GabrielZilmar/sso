@@ -48,7 +48,7 @@ export default EndpointBuilder.new("/api/user/recover-password")
       id,
       currentPassword,
       newPassword,
-      deCryptedToken: token as string,
+      decryptedToken: token as string,
     });
 
     if (updatedPasswordOrError.isLeft()) {
