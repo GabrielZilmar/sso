@@ -16,6 +16,7 @@ import GetUser from "~modules/users/use-cases/get-user";
 import GetUserByName from "~modules/users/use-cases/get-user-by-name";
 import GetUsers from "~modules/users/use-cases/get-users";
 import UpdateUser from "~modules/users/use-cases/update-user";
+import Crypto from "~services/cryptography/crypto";
 import TokenRepository from "~services/database/typeorm/repositories/token-repository";
 import UserRepository from "~services/database/typeorm/repositories/user-repository";
 import EmailSender from "~services/email-sender/nodemailer";
@@ -75,6 +76,9 @@ export default class DependencyInjection {
     });
     container.register(EmailSender, {
       useClass: EmailSender,
+    });
+    container.register(Crypto, {
+      useClass: Crypto,
     });
   }
 
