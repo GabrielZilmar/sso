@@ -14,6 +14,7 @@ export default class DomainEvents {
       "user.deleted",
       "user.get",
       "user.verified",
+      "user.set-admin",
     ];
 
     return events;
