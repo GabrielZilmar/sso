@@ -63,6 +63,10 @@ export class UserDomain extends AggregateRoot<UserProps> {
     return !!email && !!name && !!password;
   }
 
+  public setAdmin(): void {
+    this.props.isAdmin = true;
+  }
+
   public async delete(): Promise<void> {
     if (!this.props.deletedAt) {
       this.props.deletedAt = new Date();
