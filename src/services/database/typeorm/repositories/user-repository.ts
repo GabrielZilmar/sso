@@ -73,4 +73,30 @@ export default class UserRepository extends BaseRepository<User, UserDomain> {
       );
     }
   }
+
+  async update(
+    id: string,
+    item: DeepPartial<User>
+  ): Promise<Either<RepositoryError, boolean>> {
+    const preventDuplicated = await this.preventDuplicatedUser({
+      name: item.name,
+      email: item.email,
+    });
+    if (preventDuplicated.isLeft()) {
+      return new Left(preventDuplicated.value);
+    }
+
+    try {
+      await this.repository.update(id, item);
+
+      return new Right(true);
+    } catch (err) {
+      return new Left(
+        new RepositoryError(
+          RepositoryErrors.updateError,
+          (err as Error).message
+        )
+      );
+    }
+  }
 }
