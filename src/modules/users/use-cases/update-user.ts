@@ -1,6 +1,7 @@
 import { injectable } from "tsyringe";
 import UserName from "~modules/users/domain/value-objects/name";
 import { UserDTO, UserDtoTransformer } from "~modules/users/dto/user-dto";
+import UserMapper from "~modules/users/mappers/user-mapper";
 import UserUseCaseError, {
   UserUseCaseErrors,
 } from "~modules/users/use-cases/error";
@@ -23,9 +24,11 @@ export default class UpdateUser
   implements UseCase<UpdateUserParams, UpdateUserResponse>
 {
   private userRepository: UserRepository;
+  private userMapper: UserMapper;
 
-  constructor(userRepository: UserRepository) {
+  constructor(userRepository: UserRepository, userMapper: UserMapper) {
     this.userRepository = userRepository;
+    this.userMapper = userMapper;
   }
 
   async execute(request: UpdateUserParams): Promise<UpdateUserResponse> {
@@ -57,9 +60,10 @@ export default class UpdateUser
     }
 
     user.props.name = userName.value;
-    const updatedUser = await this.userRepository.update(id, {
-      name: userName.value.value,
-    });
+    const updatedUser = await this.userRepository.update(
+      id,
+      await this.userMapper.toPersistence(user)
+    );
 
     if (updatedUser.isLeft()) {
       const errorMessage = updatedUser.value.message;
