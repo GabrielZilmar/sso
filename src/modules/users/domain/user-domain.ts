@@ -3,6 +3,7 @@ import UserDomainError, {
 } from "~modules/users/domain/errors";
 import { UserCreatedEventPayload } from "~modules/users/domain/events-listeners/user-created";
 import { UserDeletedEventPayload } from "~modules/users/domain/events-listeners/user-deleted";
+import { UserSetAdminEventPayload } from "~modules/users/domain/events-listeners/user-set-admin";
 import UserId from "~modules/users/domain/user-id";
 import UserEmail from "~modules/users/domain/value-objects/email";
 import UserName from "~modules/users/domain/value-objects/name";
@@ -63,8 +64,12 @@ export class UserDomain extends AggregateRoot<UserProps> {
     return !!email && !!name && !!password;
   }
 
-  public setAdmin(): void {
+  public async setAdmin(): Promise<void> {
     this.props.isAdmin = true;
+    const eventPayload: UserSetAdminEventPayload = {
+      userId: this.userId,
+    };
+    await this.emitEvent("user.set-admin", eventPayload);
   }
 
   public async delete(): Promise<void> {
