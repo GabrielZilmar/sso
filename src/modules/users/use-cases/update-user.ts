@@ -66,6 +66,17 @@ export default class UpdateUser
     );
 
     if (updatedUser.isLeft()) {
+      const errorMessage = updatedUser.value.message;
+
+      if (errorMessage.includes("duplicated")) {
+        return new Left(
+          new UserUseCaseError(
+            UserUseCaseErrors.duplicatedUserName(name),
+            Http.Status.BAD_REQUEST
+          )
+        );
+      }
+
       return new Left(
         new UserUseCaseError(
           UserUseCaseErrors.couldNotUpdateUser,

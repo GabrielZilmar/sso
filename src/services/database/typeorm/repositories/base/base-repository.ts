@@ -85,12 +85,21 @@ export abstract class BaseRepository<T extends { id: string }, D>
       return new Left(preventInexistent.value);
     }
 
-    const newItem = await this.repository.update(id, item);
-    if (!newItem) {
-      return new Left(new RepositoryError(RepositoryErrors.updateError));
-    }
+    try {
+      const newItem = await this.repository.update(id, item);
+      if (!newItem) {
+        return new Left(new RepositoryError(RepositoryErrors.updateError));
+      }
 
-    return new Right(true);
+      return new Right(true);
+    } catch (err) {
+      return new Left(
+        new RepositoryError(
+          RepositoryErrors.updateError,
+          (err as Error).message
+        )
+      );
+    }
   }
 
   async delete(id: string): Promise<Either<RepositoryError, boolean>> {

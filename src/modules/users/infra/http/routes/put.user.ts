@@ -1,6 +1,8 @@
 import { Request } from "express";
 import Joi from "joi";
 import UpdateUser from "~modules/users/use-cases/update-user";
+import authenticationPipe from "~services/webserver/express/pipes/authentication.pipe";
+import authorizationPipe from "~services/webserver/express/pipes/authorization.pipe";
 import requestValidation from "~services/webserver/express/pipes/request-validation.pipe";
 import EndpointBuilder from "~services/webserver/express/utils/endpoint-builder";
 import { Http } from "~services/webserver/types";
@@ -17,7 +19,7 @@ interface UpdateUserRequest extends Request {
 
 export default EndpointBuilder.new("/api/user/:id")
   .setHttpMethod(Http.Methods.PUT)
-  .addPipe(
+  .addPipe([
     requestValidation({
       params: Joi.object({
         id: Joi.string().uuid().required(),
@@ -25,8 +27,10 @@ export default EndpointBuilder.new("/api/user/:id")
       body: Joi.object({
         name: Joi.string().required(),
       }),
-    })
-  )
+    }),
+    authenticationPipe,
+    authorizationPipe,
+  ])
   .setHandler(async (req: UpdateUserRequest, res) => {
     const { id } = req.params;
     const { name } = req.body;

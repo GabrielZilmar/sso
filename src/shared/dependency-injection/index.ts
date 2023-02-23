@@ -8,6 +8,8 @@ import TokenUsed from "~modules/token/domain/events-listeners/token-used";
 import TokenMapper from "~modules/token/mappers/token-mapper";
 import UserCreated from "~modules/users/domain/events-listeners/user-created";
 import UserDeleted from "~modules/users/domain/events-listeners/user-deleted";
+import UserSetAdmin from "~modules/users/domain/events-listeners/user-set-admin";
+import UserEmailVerified from "~modules/users/domain/events-listeners/user-verified";
 import UserMapper from "~modules/users/mappers/user-mapper";
 import AuthEmail from "~modules/users/use-cases/auth-email";
 import CreateUser from "~modules/users/use-cases/create-user";
@@ -89,6 +91,12 @@ export default class DependencyInjection {
     });
     container.register(UserDeleted, {
       useClass: UserDeleted,
+    });
+    container.register(UserSetAdmin, {
+      useClass: UserSetAdmin,
+    });
+    container.register(UserEmailVerified, {
+      useClass: UserEmailVerified,
     });
     container.register(SessionCreated, {
       useClass: SessionCreated,

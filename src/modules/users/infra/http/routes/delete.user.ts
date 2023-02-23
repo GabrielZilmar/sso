@@ -6,6 +6,8 @@ import requestValidation from "~services/webserver/express/pipes/request-validat
 import EndpointBuilder from "~services/webserver/express/utils/endpoint-builder";
 import { Http } from "~services/webserver/types";
 import DependencyInjection from "~shared/dependency-injection";
+import authenticationPipe from "~services/webserver/express/pipes/authentication.pipe";
+import authorizationPipe from "~services/webserver/express/pipes/authorization.pipe";
 
 interface DeleteUserRequest extends Request {
   params: {
@@ -15,13 +17,15 @@ interface DeleteUserRequest extends Request {
 
 export default EndpointBuilder.new("/api/user/:id")
   .setHttpMethod(Http.Methods.DELETE)
-  .addPipe(
+  .addPipe([
     requestValidation({
       params: Joi.object({
         id: Joi.string().uuid().required(),
       }),
-    })
-  )
+    }),
+    authenticationPipe,
+    authorizationPipe,
+  ])
   .setHandler(async (req: DeleteUserRequest, res) => {
     const { id } = req.params;
 
