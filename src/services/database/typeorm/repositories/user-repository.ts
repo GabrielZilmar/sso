@@ -10,6 +10,7 @@ import DependencyInjection from "~shared/dependency-injection";
 import { Either, Left, Right } from "~shared/either";
 
 export type PreventDuplicatedParams = {
+  id?: string;
   name?: string;
   email?: string;
 };
@@ -21,12 +22,18 @@ export default class UserRepository extends BaseRepository<User, UserDomain> {
   }
 
   private async preventDuplicatedUser({
+    id,
     name,
     email,
   }: PreventDuplicatedParams): Promise<Either<RepositoryError, boolean>> {
     const itemExist = await this.findOneByCriteria([{ name }, { email }]);
 
     if (itemExist) {
+      const isSameUser = itemExist.id?.toValue() === id;
+      if (isSameUser) {
+        return new Right(true);
+      }
+
       const itemsDuplicated: { name?: string; email?: string } = {};
       if (itemExist.name.value === name) {
         itemsDuplicated.name = name;
@@ -79,6 +86,7 @@ export default class UserRepository extends BaseRepository<User, UserDomain> {
     item: DeepPartial<User>
   ): Promise<Either<RepositoryError, boolean>> {
     const preventDuplicated = await this.preventDuplicatedUser({
+      id,
       name: item.name,
       email: item.email,
     });
