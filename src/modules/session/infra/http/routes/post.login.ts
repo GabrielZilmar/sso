@@ -14,6 +14,9 @@ interface LoginRequest extends Request {
     email: string;
     password: string;
   };
+  query: {
+    redirectUrl: string;
+  };
 }
 
 export default EndpointBuilder.new("/api/session/login")
@@ -24,11 +27,15 @@ export default EndpointBuilder.new("/api/session/login")
         email: Joi.string().email().required(),
         password: Joi.string().required(),
       }),
+      query: Joi.object({
+        redirectUrl: Joi.string().uri().optional(),
+      }),
     })
   )
   .setHandler(async (req: LoginRequest, res) => {
-    res.cookie(ACCESS_TOKEN_NAME, "");
+    res.clearCookie(ACCESS_TOKEN_NAME);
     const { body: loginData } = req;
+    const { redirectUrl } = req.query;
 
     const loginUseCase = DependencyInjection.resolve(LoginUseCase);
     const userAuthenticatedOrError = await loginUseCase.execute(loginData);
@@ -46,5 +53,10 @@ export default EndpointBuilder.new("/api/session/login")
       httpOnly: true, // http only, prevents JavaScript cookie access
       secure: true, // cookie must be sent over https / ssl
     });
+
+    if (redirectUrl) {
+      res.status(Http.Status.REDIRECT).redirect(redirectUrl);
+      return;
+    }
     res.status(Http.Status.OK).send(userAuthenticatedOrError.value);
   });
