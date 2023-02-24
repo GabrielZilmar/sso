@@ -6,7 +6,7 @@ import EndpointBuilder from "~services/webserver/express/utils/endpoint-builder"
 import { Http } from "~services/webserver/types";
 import DependencyInjection from "~shared/dependency-injection";
 
-const ACCESS_TOKEN_NAME = "access-token";
+export const ACCESS_TOKEN_NAME = "access-token";
 const ONE_DAY = 86400 * 1000;
 
 interface LoginRequest extends Request {
@@ -16,7 +16,7 @@ interface LoginRequest extends Request {
   };
 }
 
-export default EndpointBuilder.new("/api/login")
+export default EndpointBuilder.new("/api/session/login")
   .setHttpMethod(Http.Methods.POST)
   .addPipe(
     requestValidation({
@@ -27,6 +27,7 @@ export default EndpointBuilder.new("/api/login")
     })
   )
   .setHandler(async (req: LoginRequest, res) => {
+    res.cookie(ACCESS_TOKEN_NAME, "");
     const { body: loginData } = req;
 
     const loginUseCase = DependencyInjection.resolve(LoginUseCase);
