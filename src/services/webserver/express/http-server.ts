@@ -1,10 +1,11 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import { inject, injectable } from "tsyringe";
 import { WebServer } from "~services/webserver/contract";
 import { glob } from "glob";
 import http from "http";
 import EndpointBuilder from "~services/webserver/express/utils/endpoint-builder";
-import { inject, injectable } from "tsyringe";
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -22,10 +23,10 @@ export default class ExpressWebServer implements WebServer {
   public async setup(): Promise<http.Server> {
     const app = express();
 
-    app.use(cors({ origin: true }));
-
+    app.use(cors({ credentials: true, origin: true }));
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json());
+    app.use(cookieParser());
 
     const endpointFiles = `../../../**/routes/*.${
       this.env === "prod" ? "js" : "ts"
