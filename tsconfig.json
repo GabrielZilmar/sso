@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "lib": ["es5", "es6"],
-    "target": "es5",
+    "target": "es2017",
     "module": "commonjs",
+    "lib": ["es6"],
     "moduleResolution": "node",
     "outDir": "./build",
     "emitDecoratorMetadata": true,
@@ -10,6 +10,16 @@
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "baseUrl": "src"
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "baseUrl": "./",
+    "paths": {
+      "~modules/*": ["./src/modules/*"],
+      "~services/*": ["./src/services/*"],
+      "~types/*": ["./src/types/*"],
+      "~shared/*": ["./src/shared/*"],
+      "~config/*": ["./src/config/*"],
+      "~/*": ["./src*"]
+    }
   }
 }
