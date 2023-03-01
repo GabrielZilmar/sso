@@ -23,8 +23,7 @@ export default class ExpressWebServer implements WebServer {
   public async setup(): Promise<http.Server> {
     const app = express();
 
-    app.use(cors({ origin: true }));
-
+    app.use(cors({ credentials: true, origin: true }));
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json());
     app.use(cookieParser());
