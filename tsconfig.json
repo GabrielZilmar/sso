@@ -4,13 +4,14 @@
     "module": "commonjs",
     "lib": ["es6"],
     "moduleResolution": "node",
+    "rootDir": "./",
     "outDir": "./build",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "sourceMap": true,
+    "resolveJsonModule": true,
     "strictNullChecks": true,
     "baseUrl": "./",
     "paths": {
@@ -21,5 +22,6 @@
       "~config/*": ["./src/config/*"],
       "~/*": ["./src*"]
     }
-  }
+  },
+  "include": ["src/"]
 }
