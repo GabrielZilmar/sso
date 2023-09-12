@@ -13,7 +13,7 @@ export const AppDataSource = new DataSource({
   synchronize: true,
   logging: false,
   namingStrategy: new SnakeNamingStrategy(),
-  entities: ["src/modules/**/entity/*{.ts,.js}"],
-  migrations: ["src/services/database/typeorm/migrations/*{.ts,.js}"],
-  subscribers: ["src/services/database/typeorm/subscribers/*{.ts,.js}"],
+  entities: [databaseConfig.entitiesPath],
+  migrations: [databaseConfig.migrationsPath],
+  subscribers: [databaseConfig.subscribersPath],
 });
